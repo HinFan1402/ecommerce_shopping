@@ -9,8 +9,8 @@ namespace ecommerce_shopping.Views.Shared.Validations
         {
             if(value is IFormFile file)
             {
-                var extension = Path.GetExtension(file.FileName);
-                string[] extensions = { "jpg", "png", "jpeg" };
+                var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+                string[] extensions = { ".jpg", ".png", ".jpeg" };
                 
                 bool result= extensions.Any(x => extension.EndsWith(x));
                 if (!result)

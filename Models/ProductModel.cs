@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ecommerce_shopping.Views.Shared.Validations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ecommerce_shopping.Models
@@ -25,7 +26,7 @@ namespace ecommerce_shopping.Models
         [Required]
         public string Image { get; set; } = "noimage.jpg";
         [NotMapped]
-        [FileExtensions]
+        [FileExtension]
         public IFormFile ImageUpload {  get; set; }
     }
 }
