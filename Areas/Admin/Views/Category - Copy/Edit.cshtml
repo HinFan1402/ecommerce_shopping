@@ -1,10 +1,10 @@
 ﻿@model ProductModel
 @{
-    ViewData["title"] = "Create Product";
+    ViewData["title"] = "Edit Product";
 }
-<h2>Create Product</h2>
+<h2>Edit Product</h2>
 <div class="col-md-9">
-    <form autocomplete="off" asp-action="Create" enctype="multipart/form-data">
+    <form autocomplete="off" asp-action="Edit" enctype="multipart/form-data">
 
 
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -16,7 +16,7 @@
 
         <div class="form-group">
             <label>Price</label>
-            <input asp-for="Price" pattern="[0-9.,]+" class="form-control typing-price" />
+            <input asp-for="Price" pattern="[0-9.,]+" type="text" class="form-control typing-price" />
 
             <span id="price-convert"></span>
 
@@ -49,11 +49,11 @@
             <label>Image</label>
             <input asp-for="ImageUpload" class="form-control" />
             <span asp-validation-for="ImageUpload" class="text-danger"></span>
-            <img id="imgpreview" class=" pt-2" />
+            <img  src="~/images/@Model.Image" width="120px"></img>
         </div>
 
         <div class="form-group">
-            <button class="btn btn-primary">Create</button>
+            <button class="btn btn-primary">Update</button>
         </div>
 
 
@@ -61,14 +61,12 @@
     <a asp-action="Index">Back to list product</a>
 </div>
 
-
-@section Scripts{
-@{
+@section Scripts {
+    @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
     <script>
-        $("#ImageUpload").change(function(){
-            readURL(this);
-        })
+        CKEDITOR.replace( 'Description' );
     </script>
 }

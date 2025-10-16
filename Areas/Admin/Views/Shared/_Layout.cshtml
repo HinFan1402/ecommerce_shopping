@@ -42,26 +42,9 @@
 						</div>
 						<div class="mainmenu pull-left">
 							<ul class="nav navbar-nav collapse navbar-collapse">
-								<li><a asp-controller="Home" asp-action="Index"class="active">Home</a></li>
-								<li class="dropdown">
-									<a asp-controller="Product" asp-action="Index">Shop<i class="fa fa-angle-down"></i></a>
-									<ul role="menu" class="sub-menu">
-										<li><a asp-controller ="Category" >Category</a></li>
-										<li><a asp-controller="Product" asp-action="Details" >Product Details</a></li>
-										<li><a asp-controller="Cart" asp-action="Checkout" >Checkout</a></li>
-										<li><a asp-controller="Cart" asp-action="Index">Cart</a></li>
-										<li><a asp-action="Login">Login</a></li>
-									</ul>
-								</li>
-								<li class="dropdown">
-									<a href="#">Blog<i class="fa fa-angle-down"></i></a>
-									<ul role="menu" class="sub-menu">
-										<li><a href="blog.html">Blog List</a></li>
-										<li><a href="blog-single.html">Blog Single</a></li>
-									</ul>
-								</li>
-								<li><a href="404.html">404</a></li>
-								<li><a href="contact-us.html">Contact</a></li>
+								<li><a asp-controller="Product" asp-action="Index"class="active">Home</a></li>
+								<li><a asp-controller="Brand" asp-action="Index">Product</a></li>
+								<li><a asp-controller="Category" asp-action="Index">Category</a></li>
 							</ul>
 						</div>
 					</div>
@@ -109,6 +92,7 @@
 	<script src="~/js/price-range.js"></script>
 	<script src="~/js/jquery.prettyPhoto.js"></script>
 	<script src="~/js/main.js"></script>
+	<script src="~/backend/js/site.js"></script>
 	@await RenderSectionAsync("Scripts", required:false)
 </body>
 </html>
