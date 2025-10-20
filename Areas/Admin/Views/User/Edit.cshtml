@@ -1,0 +1,52 @@
+﻿@model AppUserModel
+@{
+    ViewData["title"] = "Edit User";
+}
+<h2>Edit User</h2>
+<div class="col-md-9">
+    <form autocomplete="off" asp-action="Edit" enctype="multipart/form-data" method="post">
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        @Html.AntiForgeryToken()
+        <input asp-for="Id" type="hidden"  class="form-control" />
+        <div class="form-group">
+            <label>Name</label>
+            <input asp-for="UserName" required class="form-control" />
+            <span asp-validation-for="UserName" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label>Email</label>
+            <input asp-for="Email" required class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label>Phone number</label>
+            <input asp-for="PhoneNumber" required class="form-control" />
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input asp-for="PassWordNoHash" readonly required class="form-control" />
+            <span asp-validation-for="PassWordNoHash" required class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label>Role</label>
+            <select asp-for="RoleId" class="form-control" asp-items="ViewBag.Roles">
+            </select>
+            <span asp-validation-for="RoleId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <button class="btn btn-success">Edit</button>
+        </div>
+
+    </form>
+    <a asp-action="Index">Back to list User</a>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

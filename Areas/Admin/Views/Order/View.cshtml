@@ -1,0 +1,36 @@
+﻿@model IEnumerable<OrderDetailModel>
+
+<h2>Chi tiết đơn hàng</h2>
+@if(Model.Any()){
+<p><strong>User:</strong> @Model.FirstOrDefault().UserName</p>
+<p><strong>Mã đơn hàng:</strong> @Model.FirstOrDefault().OrderCode</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Sản phẩm</th>
+            <th>Giá</th>
+            <th>Số lượng</th>
+            <th>Thành tiền</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Product.Name</td>
+                <td>@item.Price.ToString("N0") đ</td>
+                <td>@item.Quantity</td>
+                <td>@item.Total.ToString("N0") đ</td>
+            </tr>
+        }
+    </tbody>
+    }
+    <tfoot>
+        <tr>
+            <td colspan="3" class="text-right"><strong>Tổng đơn hàng:</strong></td>
+            <td><strong>@Model.Sum(t=> t.Total).ToString("N0") đ</strong></td>
+        </tr>
+    </tfoot>
+</table>
+}

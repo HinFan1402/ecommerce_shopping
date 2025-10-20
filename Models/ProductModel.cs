@@ -13,7 +13,9 @@ namespace ecommerce_shopping.Models
         [Required, MinLength(4, ErrorMessage = "Yêu cầu nhập mô tả sản phẩm!")]
         public string Description { get; set; }
         public string Slug { get; set; }
-        [Required,Range(0.001,double.MaxValue, ErrorMessage = "Yêu cầu nhập giá sản phẩm!")]
+        [Required]
+        [Range(1, double.MaxValue, ErrorMessage = "Yêu cầu nhập giá sản phẩm!")]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }
         [Required, Range(1, int.MaxValue, ErrorMessage = "Chọn 1 thương hiệu")]
         public int BrandId { get; set; }
