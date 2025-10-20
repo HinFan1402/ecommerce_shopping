@@ -1,0 +1,40 @@
+﻿
+
+<h1>List User</h1>
+
+<a asp-area="Admin" asp-action="Create" asp-controller="User" class="btn btn-success btn-sm mb-3">
+    <span class="glyphicon glyphicon-plus"></span> Add User
+</a>
+
+<div class="table-responsive pt-5">
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">User Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Password</th>
+                <th scope="col">Role</th>
+                <th scope="col">Manage</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var usersWithRoles in Model)
+            {
+                <tr>
+                    <td class="text-break" style="max-width: 150px;">@usersWithRoles.User.Id</td>
+                    <td>@usersWithRoles.User.UserName</td>
+                    <td>@usersWithRoles.User.Email</td>
+                    <td style="word-break: break-all; max-width: 200px;">@usersWithRoles.User.PasswordHash</td>
+                    <td>
+                        @usersWithRoles.RoleName
+                    </td>
+                    <td>
+                        <a class="btn btn-warning btn-sm" asp-action="Edit" asp-controller="User" asp-route-id="@usersWithRoles.User.Id">Edit</a>
+                        <a class="btn btn-danger btn-sm confirmDeletion" asp-action="Delete" asp-controller="User" asp-route-id="@usersWithRoles.User.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,11 +1,13 @@
 ﻿using ecommerce_shopping.Models;
 using ecommerce_shopping.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ecommerce_shopping.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles ="Admin")]
     public class CategoryController : Controller
     {
         private readonly DataContext _dataContext;

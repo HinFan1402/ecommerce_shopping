@@ -1,0 +1,39 @@
+﻿@model LoginViewModel
+@{
+    ViewData["title"] = "Product Listed";
+}
+<section id="form">
+    <!--form-->
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-8 col-sm-offset-1">
+                <div class="login-form">
+                    <!--login form-->
+                    <h2>Login to your account</h2>
+                    <form asp-controller="Account" asp-action="Login">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <label>UserName</label>
+                            <input asp-for="UserName" class="form-control" />
+                            <span asp-validation-for="UserName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input asp-for="Password" class="form-control" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-success">Login</button>
+                        </div>
+                    </form>
+                    <a  asp-action="Register" asp-controller="Account" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-plus"></span> Register</a>
+                </div><!--/login form-->
+            </div>
+        </div>
+    </div>
+</section><!--/form-->
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
