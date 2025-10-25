@@ -19,6 +19,8 @@ namespace ecommerce_shopping.Controllers
         public IActionResult Index()
         {
             var products= _datacontext.Products.ToList();
+            var activeSliders =_datacontext.Sliders.Where(s => s.Status == 1).ToList();
+            ViewBag.ActiveSliders = activeSliders;
             return View(products);
         }
 
@@ -41,6 +43,10 @@ namespace ecommerce_shopping.Controllers
         {
             
             return View(); 
+        }
+        public IActionResult Contact()
+        {
+            return View();
         }
     }
 }

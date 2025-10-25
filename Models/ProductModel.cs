@@ -27,6 +27,7 @@ namespace ecommerce_shopping.Models
         public BrandModel Brand { get; set; }
         [Required]
         public string Image { get; set; } = "noimage.jpg";
+        public ICollection<RatingModel> Ratings { get; set; }
         [NotMapped]
         [FileExtension]
         public IFormFile ImageUpload {  get; set; }

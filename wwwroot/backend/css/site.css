@@ -1,0 +1,42 @@
+﻿/* ==== BREADCRUMB ADMIN STYLE ==== */
+
+/* Khối chính */
+.custom-breadcrumb {
+    /* Giữ bố cục chung */
+    font-weight: 600;
+}
+
+/* Danh sách breadcrumb (ol) */
+.breadcrumb {
+    background: transparent;
+    margin: 0;
+    padding: 0;
+}
+
+    /* Các mục breadcrumb (li) — phần Management */
+    .breadcrumb li {
+        font-size: 21px;
+        font-weight: 400;
+        color: black;
+    }
+
+/* LINK ADMIN */
+.admin-link {
+    font-size: 24px; /* ✅ Chỉ Admin to hơn */
+    color: #FE980F !important;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+    .admin-link:hover,
+    .admin-link:active {
+        color: #fff !important;
+        background-color: #FE980F;
+        text-decoration: none;
+    }
+
+/* Dấu phân cách giữa các breadcrumb */
+.breadcrumb > li + li:before {
+    content: "/";
+    color: #999;
+}

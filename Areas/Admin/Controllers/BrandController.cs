@@ -10,6 +10,7 @@ namespace ecommerce_shopping.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles ="Admin")]
+    [Route("Admin/Brand")]
 
     public class BrandController : Controller
     {
@@ -18,11 +19,31 @@ namespace ecommerce_shopping.Areas.Admin.Controllers
         {
             _dataContext = dataContext;
         }
-        public async Task<IActionResult> Index()
+        [Route("Index")]
+        public async Task<IActionResult> Index(int pg=1)
         {
-            return View(await _dataContext.Brands.OrderByDescending(b => b.Id).ToListAsync());
+            List<BrandModel> brand = _dataContext.Brands.ToList();
+
+
+            const int pageSize = 10;
+
+            if (pg < 1)
+            {
+                pg = 1;
+            }
+            int recsCount = brand.Count();
+
+            var pager = new Paginate(recsCount, pg, pageSize);
+
+            int recSkip = (pg - 1) * pageSize;
+
+            var data = brand.Skip(recSkip).Take(pager.PageSize).ToList();
+
+            ViewBag.Pager = pager;
+
+            return View(data);
         }
-    
+        [Route("Edit")]
         public async Task<IActionResult> Edit(int id)
         {
             BrandModel brand = await _dataContext.Brands.FindAsync(id);
@@ -33,6 +54,7 @@ namespace ecommerce_shopping.Areas.Admin.Controllers
             return View(brand);
         }
         [HttpPost]
+        [Route("Edit")]
         public async Task<IActionResult> Edit(int Id, BrandModel brand)
         {
             if (ModelState.IsValid)
@@ -61,12 +83,14 @@ namespace ecommerce_shopping.Areas.Admin.Controllers
             return View(brand);
         }
         [HttpGet]
+        [Route("Create")]
         public IActionResult Create()
         {
             return View();
 
         }
         [HttpPost]
+        [Route("Create")]
         public async Task<IActionResult> Create(int Id, BrandModel brand)
         {
             if (ModelState.IsValid)
@@ -94,6 +118,7 @@ namespace ecommerce_shopping.Areas.Admin.Controllers
             }
             return View(brand);
         }
+        [Route("Delete")]
         public async Task<IActionResult> Delete(int id)
         {
             BrandModel brands = await _dataContext.Brands.FindAsync(id);

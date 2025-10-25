@@ -1,0 +1,42 @@
+﻿@model IEnumerable<ProductModel>
+
+@foreach (var item in Model)
+{
+    <div class="col-sm-4 mb-4">
+        <div class="card product-card text-center h-100">
+            <a asp-action="Details" asp-controller="Product" asp-route-id="@item.Id" class="text-decoration-none text-dark">
+
+                <!-- Ảnh sản phẩm -->
+                <div class="product-image d-flex align-items-end justify-content-center">
+                    <img src="~/images/@item.Image" alt="@item.Name" class="img-fluid" />
+                </div>
+
+                <!-- Nội dung -->
+                <div class="card-body py-2">
+                    <h5 class="product-name fw-bold mb-1">@item.Name</h5>
+                    <h4 class="product-price  mb-2" style="color:#0d6efd;">
+                        @item.Price.ToString("#,##0 VND")
+                    </h4>
+                    <p class="mb-1" style="color: #666; font-size: 13.5px;">Danh mục: @item.Category.Name</p>
+                    <p class="mb-2" style="color: #666; font-size: 13.5px;">Thương hiệu: @item.Brand.Name</p>
+                </div>
+            </a>
+
+            <!-- Footer -->
+            <div class="card-footer bg-transparent border-0 pt-0">
+                <button class="btn btn-light border w-100 mb-2 add-to-cart" data-product-id="@item.Id">
+                    <i class="fa fa-shopping-cart"></i> Thêm giỏ hàng
+                </button>
+
+                <div class="d-flex justify-content-between gap-2">
+                    <a href="#" class="btn btn-sm btn-light border flex-fill wishlist-btn" style="color:#666;">
+                        <i class="fa fa-plus-square"></i> Add to wishlist
+                    </a>
+                    <a href="#" class="btn btn-sm btn-light border flex-fill compare-btn" style="color:#666;">
+                        <i class="fa fa-plus-square"></i> Add to compare
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+}

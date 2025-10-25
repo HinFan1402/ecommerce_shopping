@@ -9,7 +9,9 @@ using System.Reflection.Metadata.Ecma335;
 namespace ecommerce_shopping.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Route("Admin/Product")]
     [Authorize(Roles = "Admin")]
+
     public class ProductController : Controller
     {
         private readonly DataContext _dataContext;
@@ -20,11 +22,33 @@ namespace ecommerce_shopping.Areas.Admin.Controllers
             _webHostEnviroment = webHostEnvironment;
         }
         [HttpGet]
-        public async Task<IActionResult> Index()
+        [Route("Index")]
+        public async Task<IActionResult> Index(int pg = 1)
         {
-            return View(await _dataContext.Products.OrderByDescending(p => p.Id).Include(c => c.Category).Include(b => b.Brand).ToListAsync());
-        }
+            List<ProductModel> Product = _dataContext.Products.Include(p => p.Brand)
+        .Include(p => p.Category).ToList();
 
+
+
+            const int pageSize = 10;
+
+            if (pg < 1)
+            {
+                pg = 1;
+            }
+            int recsCount = Product.Count();
+
+            var pager = new Paginate(recsCount, pg, pageSize);
+
+            int recSkip = (pg - 1) * pageSize;
+
+            var data = Product.Skip(recSkip).Take(pager.PageSize).ToList();
+
+            ViewBag.Pager = pager;
+
+            return View(data);
+        }
+        [Route("Create")]
         public IActionResult Create()
         {
             ViewBag.Categories = new SelectList(_dataContext.Categories, "Id", "Name");
@@ -34,10 +58,11 @@ namespace ecommerce_shopping.Areas.Admin.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("Create")]
         public async Task<IActionResult> Create(ProductModel product)
         {
             ViewBag.Categories = new SelectList(_dataContext.Categories, "Id", "Name", product.CategoryId);
-            ViewBag.Brands = new SelectList(_dataContext.Brands, "Id", "Name", product.BrandId);
+            ViewBag.Products = new SelectList(_dataContext.Products, "Id", "Name", product.Id);
             if (ModelState.IsValid)
             {
                 product.Slug = product.Name.Replace(" ", "-");
@@ -84,6 +109,7 @@ namespace ecommerce_shopping.Areas.Admin.Controllers
             return View(product);
         }
         [HttpGet]
+        [Route("Edit")]
         public async Task<IActionResult> Edit(int id)
         {
             ProductModel product = await _dataContext.Products.FindAsync(id);
@@ -96,11 +122,13 @@ namespace ecommerce_shopping.Areas.Admin.Controllers
             return View(product);
         }
         [HttpPost]
+        [Route("Edit")]
         public async Task<IActionResult> Edit(int Id, ProductModel product)
         {
             ProductModel productEdit = await _dataContext.Products.AsNoTracking().FirstOrDefaultAsync(x => x.Id == Id);
             ViewBag.Categories = new SelectList(_dataContext.Categories, "Id", "Name", product.CategoryId);
             ViewBag.Brands = new SelectList(_dataContext.Brands, "Id", "Name", product.BrandId);
+
             if (ModelState.IsValid)
             {
                 product.Slug = product.Name.Replace(" ", "-");
@@ -121,7 +149,8 @@ namespace ecommerce_shopping.Areas.Admin.Controllers
                         System.IO.File.Delete(oldFilePath);
                     }
                 }
-                else {
+                else
+                {
                     product.Image = productEdit.Image;
                 }
 
@@ -132,21 +161,12 @@ namespace ecommerce_shopping.Areas.Admin.Controllers
 
             }
             else
-            {
+            { 
                 TempData["error"] = "Model has something wrong!";
-                List<string> errors = new List<string>();
-                foreach (var value in ModelState.Values)
-                {
-                    foreach (var error in value.Errors)
-                    {
-                        errors.Add(error.ErrorMessage);
-                    }
-                }
-                string errorMessage = string.Join("\n", errors);
-                return BadRequest(errorMessage);
+                return View(product); // 👈 Trả lại View để hiển thị lỗi và giữ data
             }
-            return View(product);
         }
+        [Route("Delete")]
         public async Task<IActionResult> Delete(int id)
         {
             ProductModel product = await _dataContext.Products.FindAsync(id);
@@ -165,5 +185,5 @@ namespace ecommerce_shopping.Areas.Admin.Controllers
             return RedirectToAction("Index");
         }
     }
- 
- }
+
+}

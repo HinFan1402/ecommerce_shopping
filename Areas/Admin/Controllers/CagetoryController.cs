@@ -8,6 +8,7 @@ namespace ecommerce_shopping.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles ="Admin")]
+    [Route("Admin/Category")]
     public class CategoryController : Controller
     {
         private readonly DataContext _dataContext;
@@ -15,11 +16,31 @@ namespace ecommerce_shopping.Areas.Admin.Controllers
         {
             _dataContext = dataContext;
         }
-        public async Task<IActionResult> Index()
+        [Route("Index")]
+        public async Task<IActionResult> Index(int pg=1)
         {
-            return View(await _dataContext.Categories.OrderByDescending(b => b.Id).ToListAsync());
-        }
+            List<CategoryModel> Category = _dataContext.Categories.ToList();
 
+
+            const int pageSize = 10;
+
+            if (pg < 1)
+            {
+                pg = 1;
+            }
+            int recsCount = Category.Count();
+
+            var pager = new Paginate(recsCount, pg, pageSize);
+
+            int recSkip = (pg - 1) * pageSize;
+
+            var data = Category.Skip(recSkip).Take(pager.PageSize).ToList();
+
+            ViewBag.Pager = pager;
+
+            return View(data);
+        }
+        [Route("Edit")]
         public async Task<IActionResult> Edit(int id)
         {
             CategoryModel category = await _dataContext.Categories.FindAsync(id);
@@ -30,6 +51,7 @@ namespace ecommerce_shopping.Areas.Admin.Controllers
             return View(category);
         }
         [HttpPost]
+        [Route("Edit")]
         public async Task<IActionResult> Edit(int Id, CategoryModel category)
         {
             if (ModelState.IsValid)
@@ -58,12 +80,14 @@ namespace ecommerce_shopping.Areas.Admin.Controllers
             return View(category);
         }
         [HttpGet]
+        [Route("Create")]
         public IActionResult Create()
         {
             return View();
 
         }
         [HttpPost]
+        [Route("Create")]
         public async Task<IActionResult> Create(int Id, CategoryModel category)
         {
             if (ModelState.IsValid)
@@ -91,6 +115,7 @@ namespace ecommerce_shopping.Areas.Admin.Controllers
             }
             return View(category);
         }
+        [Route("Delete")]
         public async Task<IActionResult> Delete(int id)
         {
             CategoryModel category = await _dataContext.Categories.FindAsync(id);

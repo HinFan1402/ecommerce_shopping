@@ -1527,38 +1527,7 @@ h2.title {
   margin-bottom: 50px;
 }
 
-.breadcrumbs {
-  position: relative;
-}
 
-.breadcrumbs .breadcrumb {
-  background:transparent;
-  margin-bottom: 75px;
-  padding-left: 0;
-}
-
-.breadcrumbs .breadcrumb li a {
-  background:#FE980F;
-  color: #FFFFFF;
-  padding: 3px 7px;
-}
-
-.breadcrumbs .breadcrumb li a:after {
-  content:"";
-  height:auto;
-  width: auto;
-  border-width: 8px;
-  border-style: solid;
-  border-color:transparent transparent transparent #FE980F;
-  position: absolute;
-  top: 11px;
-  left:48px;
-
-}
-
-.breadcrumbs .breadcrumb > li + li:before {
-  content: " ";
-}
 
 #cart_items .cart_info {
   border: 1px solid #E6E4DF;

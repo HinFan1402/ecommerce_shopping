@@ -1,4 +1,5 @@
-﻿using ecommerce_shopping.Models;
+﻿using ecommerce_shopping.Areas.Admin.Repository;
+using ecommerce_shopping.Models;
 using ecommerce_shopping.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,9 +10,11 @@ namespace ecommerce_shopping.Controllers
     public class CheckoutController : Controller
     {
         private readonly DataContext _dataContext;
-        public CheckoutController(DataContext dataContext)
+        private readonly IEmailSender _emailSender;
+        public CheckoutController(DataContext dataContext,IEmailSender emailSender)
         {
             _dataContext = dataContext;
+            _emailSender = emailSender;
         }
         public IActionResult Index()
         {
@@ -31,7 +34,7 @@ namespace ecommerce_shopping.Controllers
                 var orderItem = new OrderModel();
                 orderItem.OrderCode = orderCode;
                 orderItem.UserName = userEmail;
-                orderItem.status = 1;
+                orderItem.status = 0;
                 orderItem.CreateDate = DateTime.Now;
 
                 _dataContext.Orders.Add(orderItem);
@@ -51,6 +54,8 @@ namespace ecommerce_shopping.Controllers
                     await _dataContext.SaveChangesAsync();
                 }
                 HttpContext.Session.Remove("Cart");
+                // Send email notification
+                await _emailSender.SenderEmailAsync(userEmail, "Đơn hàng mới", $"Đơn hàng của bạn với mã đơn hàng {orderCode} đã được tạo thành công và đang chờ duyệt.");
                 TempData["success"]="Tạo đơn hàng thành công, đang chờ duyệt";
             }
             return RedirectToAction("Index", "Home");

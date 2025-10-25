@@ -1,3 +1,4 @@
+using ecommerce_shopping.Areas.Admin.Repository;
 using ecommerce_shopping.Models;
 using ecommerce_shopping.Repository;
 using Microsoft.AspNetCore.Identity;
@@ -47,6 +48,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 {
     options.AccessDeniedPath = "/Home/AccessDenied";
 });
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 var app = builder.Build();
 
 app.UseSession();
