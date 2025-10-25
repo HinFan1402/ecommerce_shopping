@@ -49,4 +49,10 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        $("#ImageUpload").change(function(){
+            readURL(this);
+        })
+    </script>
+
 }

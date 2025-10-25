@@ -1,36 +1,50 @@
 ﻿@model IEnumerable<OrderDetailModel>
+@{
+    ViewData["title"] = "List Order";
 
+    decimal total = 0;
+    decimal subtotal = 0;
+
+}
 <h2>Chi tiết đơn hàng</h2>
-@if(Model.Any()){
-<p><strong>User:</strong> @Model.FirstOrDefault().UserName</p>
-<p><strong>Mã đơn hàng:</strong> @Model.FirstOrDefault().OrderCode</p>
+@if (Model.Any())
+{
+    <p><strong>User:</strong> @Model.FirstOrDefault().UserName</p>
+    <p><strong>Mã đơn hàng:</strong> @Model.FirstOrDefault().OrderCode</p>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Sản phẩm</th>
-            <th>Giá</th>
-            <th>Số lượng</th>
-            <th>Thành tiền</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+    <table class="table table-striped ">
+        <thead>
             <tr>
-                <td>@item.Product.Name</td>
-                <td>@item.Price.ToString("N0") đ</td>
-                <td>@item.Quantity</td>
-                <td>@item.Total.ToString("N0") đ</td>
+
+                <th>Id</th>
+                <th>Product Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
             </tr>
+        </thead>
+        <tbody>
+            <input type="hidden" asp-for="@Model.FirstOrDefault().OrderCode" class="getId" />
+            @foreach (var item in Model)
+            {
+
+                total += item.Total;
+                <tr>
+
+                    <td>@item.Id</td>
+                    <td>@item.Product.Name</td>
+                    <td>@item.Price.ToString("#,##0 VND") </td>
+                    <td>@item.Quantity</td>
+                    <td>@item.Total.ToString("C") </td>
+                </tr>
+            }
+        </tbody>
         }
-    </tbody>
-    }
-    <tfoot>
-        <tr>
-            <td colspan="3" class="text-right"><strong>Tổng đơn hàng:</strong></td>
-            <td><strong>@Model.Sum(t=> t.Total).ToString("N0") đ</strong></td>
-        </tr>
-    </tfoot>
-</table>
+        <tfoot>
+            <tr>
+                <td colspan="5" class="text-right"><strong>Total:</strong></td>
+                <td><strong>@total.ToString("C") </strong></td>
+            </tr>
+        </tfoot>
+    </table>
 }

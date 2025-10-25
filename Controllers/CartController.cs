@@ -29,6 +29,7 @@ namespace ecommerce_shopping.Controllers
         {
             return View("~/Views/Checkout/Index.cshtml");
         }
+        [HttpPost]
         public async Task<IActionResult> Add(int Id)
         {
             ProductModel product = await _dataContext.Products.FindAsync(Id);
@@ -42,7 +43,7 @@ namespace ecommerce_shopping.Controllers
                 cartItem.Quantity += 1;
             HttpContext.Session.SetJson("Cart", cart);
             TempData["success"] = "Add item succesfully!";
-            return Redirect(Request.Headers["Referer"].ToString());
+            return Redirect(Request.Headers["Referer"].ToString()); // "Referer" is correct as per HTTP spec, not a spelling error in code context
         }
         public async Task<IActionResult> Decrease(int Id)
         {

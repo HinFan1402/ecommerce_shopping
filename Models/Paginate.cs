@@ -1,7 +1,11 @@
-﻿namespace ecommerce_shopping.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace ecommerce_shopping.Models
 {
+    [NotMapped]
     public class Paginate
     {
+
         public int TotalItems { get; private set; } //tổng số items
         public int PageSize { get; private set; } //tổng số item/trang
         public int CurrentPage { get; private set; } //trang hiện tại
