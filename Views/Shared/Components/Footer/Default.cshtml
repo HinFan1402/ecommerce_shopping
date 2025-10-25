@@ -1,0 +1,59 @@
+﻿
+        <div class="footer-row">
+            <!-- Cột 1 -->
+            <div class="footer-col">
+                <img src="~/images/@Model.logoImgs" alt="Shop Logo">
+                <h3>@Model.Name</h3>
+                <p>@Model.Description</p>
+
+                <h5>Thông tin Social</h5>
+                <div class="social-links">
+                    <a href="#" class="facebook" title="Facebook">
+                        <i class="fa fa-facebook fa-lg"></i>
+                    </a>
+                    <a href="#" class="zalo" title="Zalo">
+                        <i class="fa fa-comments fa-lg"></i>
+                    </a>
+                    <a href="#" class="instagram" title="Instagram">
+                        <i class="fa fa-camera fa-lg"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Cột 2 -->
+            <div class="footer-col">
+                <h4>Địa chỉ</h4>
+                <div class="map-container">
+                    <iframe src="@Html.Raw(Model.Maplink)" allowfullscreen></iframe>
+                </div>
+                <p>
+                    <i class="fa fa-map-marker"></i>
+                    <span>428 Lê Văn Lương, P.Tân Hưng, Q.7, HCM</span>
+                </p>
+            </div>
+
+            <!-- Cột 3 -->
+            <div class="footer-col">
+                <h4>Liên hệ</h4>
+                <div class="contact-info">
+                    <p>
+                        <i class="fa fa-envelope"></i>
+                        <span>@Model.Email</span>
+                    </p>
+                    <p>
+                        <i class="fa fa-phone"></i>
+                        <span>@Model.Phone</span>
+                    </p>
+                    <p>
+                        <i class="fa fa-clock-o"></i>
+                        <span>
+                            Mon - Fri: 8:00 AM - 9:00 PM<br>
+                            Sat - Sun: 9:00 AM - 8:00 PM
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+     
+

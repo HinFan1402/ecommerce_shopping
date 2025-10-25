@@ -71,4 +71,18 @@
             readURL(this);
         })
     </script>
+    <script>
+        $(".typing-price").on("keyup", function () {
+
+            var currency_input = $(this).val(); //29980000
+
+            $("#price-convert").html(
+
+                new Intl.NumberFormat('vn-VN', { style: 'currency', currency: 'VND' }).format(
+                currency_input,
+
+                )
+            );
+        });
+    </script>
 }

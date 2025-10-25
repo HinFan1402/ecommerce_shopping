@@ -1,39 +1,76 @@
-﻿@model IEnumerable<CategoryModel>
+﻿@using ecommerce_shopping.Models.ViewModels
+@model TPaginateViewModel<CategoryModel>
 @{
-    ViewData["title"] = "Category Listed";
+    var controllerName = ViewContext.RouteData.Values["controller"]?.ToString();
+    var pageTitle = $"{controllerName} Management";
+    ViewData["Title"] = $"List {controllerName}";
+
 }
-<h1>List Category</h1>
-<a asp-area="Admin" asp-action="Create" asp-controller="Category" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-plus"></span> Add Category</a>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th scope="col">Id</th>
-            <th scope="col">Category Name</th>
-            <th scope="col">Slug</th>
-            <th scope="col">Description</th>
-            <th scope="col">Status</th>
-            <th scope="col">Manage</th>
+
+<div class="container mt-4">
+  
+
+    <div class="d-flex justify-content-between align-items-center mb-1">
+        <a asp-area="Admin" asp-action="Create" asp-controller="@controllerName" class="btn btn-outline-danger">
+            <i class="fa fa-plus"></i> Add @controllerName
+        </a>
+    </div>
 
 
 
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-striped table-bordered align-middle text-center" id="myTable" style="width:100%">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width:5%;">Id</th>
+                        <th style="width:15%;">Category Name</th>
+                        <th style="width:10%;">Slug</th>
+                        <th style="width:35%;">Description</th>
+                        <th style="width:10%;">Status</th>
+                        <th style="width:25%;">Manage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>@item.Name</td>
+                            <td>@item.Slug</td>
 
-                <td>@item.Id</td>
-                <td>@item.Name</td>
-                <td>@item.Slug</td>
-                <td>@item.Description</td>
-                <td>@item.Status</td>
-                <td>
-                    <a class="btn btn-warning btn-sm" asp-action="Edit" asp-controller="Category" asp-route-id="@item.Id">Edit</a>
-                    <a class="btn btn-danger btn-sm confirmDeletion" asp-action="Delete" asp-controller="Category" asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
-        }
+                           
+                            <td class="text-truncate text-start" style="max-width: 250px;" title="@item.Description">
+                                @item.Description
+                            </td>
 
-    </tbody>
-</table>
+                            <td>@item.Status</td>
+
+                            <td>
+                                <div class="d-flex justify-content-center gap-2 flex-wrap">
+                                    <a class="btn btn-warning btn-sm"
+                                       asp-action="Edit"
+                                       asp-controller="Category"
+                                       asp-route-id="@item.Id">
+                                        <i class="fa fa-pencil"></i> Edit
+                                    </a>
+                                    <a class="btn btn-danger btn-sm confirmDeletion"
+                                       asp-action="Delete"
+                                       asp-controller="Category"
+                                       asp-route-id="@item.Id">
+                                        <i class="fa fa-trash"></i> Delete
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <partial name="_PaginatePartial" model="Model.Pager" />
+    </div>
+</div>

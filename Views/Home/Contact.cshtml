@@ -1,0 +1,56 @@
+﻿@model ecommerce_shopping.Models.ContactModel
+
+<div class="container contact-container">
+    <h2 class="contact-title text-center">Liên hệ với chúng tôi</h2>
+
+    <!-- Phần thông tin & bản đồ -->
+    <div class="row contact-info-map">
+        <!-- Cột 1: Thông tin -->
+        <div class="col-md-6 col-sm-12 contact-info">
+            <h3 class="section-heading">Thông tin cửa hàng</h3>
+            <p><i class="fa fa-map-marker"></i> @Model.Address</p>
+            <p><i class="fa fa-phone"></i> @Model.Phone</p>
+            <p><i class="fa fa-envelope"></i> @Model.Email</p>
+            <p><i class="fa fa-globe"></i> @Model.Name</p>
+            <p class="desc">@Model.Description</p>
+
+            <div class="social-icons">
+                <a href="#" class="social-btn"><i class="fa fa-facebook"></i></a>
+                <a href="#" class="social-btn"><i class="fa fa-envelope"></i></a>
+                <a href="#" class="social-btn"><i class="fa fa-phone"></i></a>
+            </div>
+        </div>
+
+        <!-- Cột 2: Bản đồ -->
+        <div class="col-md-6 col-sm-12 contact-map text-center">
+            <h3 class="section-heading">Bản đồ</h3>
+            <iframe src="@Model.Maplink"
+                    width="100%" height="320"
+                    style="border:0; border-radius:8px;"
+                    allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <!-- Form liên hệ -->
+    <div class="contact-form-area">
+        <h3 class="section-heading text-center">Gửi tin nhắn cho chúng tôi</h3>
+        <form class="contact-form">
+            <div class="row">
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" placeholder="Họ và tên" required>
+                </div>
+                <div class="col-sm-6">
+                    <input type="email" class="form-control" placeholder="Email" required>
+                </div>
+            </div>
+            <div class="row" style="margin-top:15px;">
+                <div class="col-sm-12">
+                    <textarea class="form-control" rows="5" placeholder="Nội dung tin nhắn..." required></textarea>
+                </div>
+            </div>
+            <div class="text-center" style="margin-top:20px;">
+                <button type="submit" class="contact-btn">Gửi ngay</button>
+            </div>
+        </form>
+    </div>
+</div>

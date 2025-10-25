@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace ecommerce_shopping.Areas.Admin.Controllers
 {
@@ -32,10 +33,15 @@ namespace ecommerce_shopping.Areas.Admin.Controllers
                                       join ur in _dataContext.UserRoles on u.Id equals ur.UserId
                                       join r in _dataContext.Roles on ur.RoleId equals r.Id
                                       select new {User =u ,RoleName= r.Name}).ToListAsync();
+            var loggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            ViewData["loggedInUserId"] = loggedInUserId;
             return View(userWithRole);
         }
+
         [Route("Create")]
         [HttpGet]
+
+
         public async Task<IActionResult> Create()
         {
             var roles = await _userRoleManager.Roles.ToArrayAsync();

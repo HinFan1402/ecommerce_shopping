@@ -15,10 +15,12 @@ namespace ecommerce_shopping.Models
         public string Slug { get; set; }
         [Required]
         [Range(1, double.MaxValue, ErrorMessage = "Yêu cầu nhập giá sản phẩm!")]
-        [Column(TypeName = "decimal(18,2)")]
+        [DisplayFormat(DataFormatString = "{0:0.##}", ApplyFormatInEditMode = true)]
         public decimal Price { get; set; }
         [Required, Range(1, int.MaxValue, ErrorMessage = "Chọn 1 thương hiệu")]
         public int BrandId { get; set; }
+        public int Quantity { get; set; } = 0;
+        public int Sold { get; set; }
         [Required, Range(1, int.MaxValue, ErrorMessage = "Chọn 1 Danh mục")]
         public int CategoryId { get; set; }
         
@@ -27,6 +29,7 @@ namespace ecommerce_shopping.Models
         public BrandModel Brand { get; set; }
         [Required]
         public string Image { get; set; } = "noimage.jpg";
+        public ICollection<RatingModel> Ratings { get; set; }
         [NotMapped]
         [FileExtension]
         public IFormFile ImageUpload {  get; set; }

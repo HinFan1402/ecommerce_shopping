@@ -1,0 +1,32 @@
+﻿@model IEnumerable<ContactModel>
+
+
+<table class="table table-striped" id="myTable">
+    <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Description</th>
+            <th scope="col">Map</th>
+            <th scope="col">Phone</th>
+            <th scope="col">Logo</th>
+            <th scope="col">Manage</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Description</td>
+                <td>@item.Address</td>
+                <td>@item.Phone</td>
+                <td><img src="~/images/@item.logoImgs" width="120px"></img></td>
+                <td>
+                    <a class="btn btn-warning btn-sm" asp-action="Edit" asp-controller="Contact" asp-route-name="@item.Name">Edit</a>
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
