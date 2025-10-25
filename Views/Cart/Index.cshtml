@@ -27,14 +27,14 @@
                         {
                             <tr>
                                 <td class="cart_product">
-                                    <a href=""><img src="~/images/@item.Image" alt=""></a>
+                                    <a href=""><img src="~/images/@item.Image" alt="" width="150px"></a>
                                 </td>
                                 <td class="cart_description">
                                     <h4><a href="">@item.ProductName</a></h4>
 
                                 </td>
                                 <td class="cart_price">
-                                    <p>$@item.Price</p>
+                                    <p>$@item.Price.ToString("#,##0 VND")</p>
                                 </td>
                                 <td>
                                     <div class="d-flex align-items-center gap-2">
@@ -58,7 +58,7 @@
                                 </td>
 
                                 <td class="cart_total">
-                                    <p class="cart_total_price">$@Model.CartItems.Where(x => x.ProductId == @item.ProductId).Sum(x => x.Quantity * x.Price).ToString()</p>
+                                    <p class="cart_total_price">$@Model.CartItems.Where(x => x.ProductId == @item.ProductId).Sum(x => x.Quantity * x.Price).ToString("#,##0 VND")</p>
                                 </td>
                                 <td class="cart_delete">
                                     <a class="cart_quantity_delete" href=""><i class="fa fa-times"></i></a>
@@ -66,7 +66,7 @@
                             </tr>
                         }
                         <tr row-span="5">
-                            <td colspan="1"><h3 class="text-info">GrandTotal: @Model.GrandTotal.ToString()</h3></td>
+                            <td colspan="1"><h3 class="text-info">GrandTotal: @Model.GrandTotal.ToString("#,##0 VND")</h3></td>
                             @if (User.Identity?.IsAuthenticated ?? false)
                             {
                                 <td colspan="5"> <a class="btn btn-primary btn-sm" asp-controller="Checkout" asp-action="Checkout">Checkout</a></td>

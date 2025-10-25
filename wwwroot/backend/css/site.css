@@ -1,0 +1,65 @@
+﻿/* ==== BREADCRUMB ADMIN STYLE ==== */
+
+/* Khối chính */
+.custom-breadcrumb {
+    /* Giữ bố cục chung */
+    font-weight: 600;
+}
+
+/* Danh sách breadcrumb (ol) */
+.breadcrumb {
+    background: transparent;
+    margin: 5px 15px;
+    padding: 0;
+}
+
+    /* Các mục breadcrumb (li) — phần Management */
+    .breadcrumb li {
+        font-size: 21px;
+        font-weight: 400;
+        color: black;
+    }
+
+/* LINK ADMIN */
+.admin-link {
+    font-size: 24px; /* ✅ Chỉ Admin to hơn */
+    color: #FE980F !important;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+    .admin-link:hover,
+    .admin-link:active {
+        color: #fff !important;
+        background-color: #FE980F;
+        text-decoration: none;
+    }
+
+/* Dấu phân cách giữa các breadcrumb */
+.breadcrumb > li + li:before {
+    content: "/";
+    color: #999;
+}
+/* Styling cho nút Search */
+.dt-search .search-btn {
+    /* Màu nền cam/vàng */
+    background-color: #ffb74d;
+    /* Màu chữ trắng */
+    color: white;
+    /* Loại bỏ viền */
+    border: none;
+    /* Bo góc */
+    border-radius: 4px;
+    /* Padding và chiều cao để phù hợp với ô input */
+    padding: 6px 12px;
+    height: 34px;
+    /* Di chuyển con trỏ chuột */
+    cursor: pointer;
+    /* Điều chỉnh lề (nếu cần) */
+    margin-left: 5px;
+}
+
+    /* Hiệu ứng di chuột (tùy chọn) */
+    .dt-search .search-btn:hover {
+        background-color: #ffa726; /* Cam đậm hơn khi hover */
+    }

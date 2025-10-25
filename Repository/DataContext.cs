@@ -14,5 +14,15 @@ namespace ecommerce_shopping.Repository
         public DbSet<CategoryModel> Categories { get; set; }
         public DbSet<OrderDetailModel> OrderDetails { get; set; }
         public DbSet<OrderModel> Orders { get; set; }
+        public DbSet<Paginate> Paginates { get; set; }
+        public DbSet<RatingModel> Ratings { get; set; }
+        public DbSet<WishListModel> WishLists { get; set; }
+        public DbSet<CompareModel> Compares { get; set; }
+        public DbSet<SliderModel> Sliders
+        {
+            get; set;
+        }
+        public DbSet<ContactModel> Contacts { get; set; }
+        public DbSet<ProductQuantityModel> ProductQuantities { get; set; }
     }
 }

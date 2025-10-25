@@ -1,0 +1,36 @@
+﻿@model ProductQuantityModel
+@{
+    ViewData["title"] = "Create Brand";
+}
+<h2>Create Brand</h2>
+<div class="col-md-9">
+    <form autocomplete="off" asp-action="UpdateQuantity" enctype="multipart/form-data">
+
+
+        
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input asp-for="ProductId" type="hidden" value="@ViewBag.Product.Id" class="form-control" />
+        <div class="form-group">
+            <label>Product </label>
+            <input disabled readonly class="form-control" value="@ViewBag.Product.Name" />
+        </div>
+        <div class="form-group">
+            <label>Quantity</label>
+            <input asp-for="Quantity" min="1" max="2000" pattern="[0-9.,]+" class="form-control" />
+            <span asp-validation-for="Quantity" class="text-danger"></span>
+        </div>
+       
+        <div class="form-group">
+            <button class="btn btn-success">Add</button>
+        </div>
+    </form>
+    <a asp-action="Index">Back to list Brand</a>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    >
+}

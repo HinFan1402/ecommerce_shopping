@@ -1,16 +1,17 @@
-﻿@model IEnumerable<ProductModel>
+﻿@using ecommerce_shopping.Models.ViewModels
+@model TPaginateViewModel<ProductModel>
 @{
-    ViewData["title"] = "Product Listed";
+    ViewData["title"] = "List Product";
+
 }
-<h1>List Product</h1>
-<a asp-area="Admin" asp-action="Create" asp-controller="Product" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-plus"></span> Add product</a>
-<table class="table table-striped">
+<a asp-area="Admin" asp-action="Create" asp-controller="Product" class="btn btn-outline-primary btn-sm"><span class="glyphicon glyphicon-plus"></span> Add product</a>
+<table class="table table-striped" id="myTable">
     <thead>
         <tr>
 
             <th scope="col">Id</th>
             <th scope="col">Product Name</th>
-            <th scope="col">Slug</th>
+            <th scope="col">Quantity</th>
             <th scope="col">Description</th>
             <th scope="col">Price</th>
             <th scope="col">Image</th>
@@ -23,15 +24,15 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Items)
         {
             <tr>
 
                 <td>@item.Id</td>
                 <td>@item.Name</td>
-                <td>@item.Slug</td>
+                <td>@item.Quantity <a asp-action="AddQuantity" asp-controller="Product" asp-route-id="@item.Id">Edit</a></td>
                 <td>@item.Description</td>
-                <td>@item.Price</td>
+                <td>@item.Price.ToString("#,##0 VND")</td>
                 <td><img src="~/images/@item.Image" width="120px"></img></td>
                 <td>@item.Category.Name</td>
                 <td>@item.Brand.Name</td>
@@ -41,6 +42,7 @@
                 </td>
             </tr>
         }
-
+            
     </tbody>
 </table>
+<partial name="_PaginatePartial" model="Model.Pager" />

@@ -1,0 +1,25 @@
+﻿@{
+    var controllerName = ViewContext.RouteData.Values["controller"]?.ToString();
+    var actionName = ViewContext.RouteData.Values["action"]?.ToString();
+
+    string managementName = controllerName != null ? $"{controllerName} Management" : "";
+    string actionDisplay = actionName switch
+    {
+        "Index" => "",
+        "Create" => "Add New",
+        "Edit" => "Edit",
+        "Delete" => "Delete",
+        "Details" => "Details",
+        _ => actionName
+    };
+}
+<div class="d-flex justify-content-between align-items-center mb-1 custom-breadcrumb">
+    <ol class="breadcrumb mb-0 pb-0">
+        <li><a href="/Admin" class="admin-link">Admin</a></li>
+        <li class="active">@managementName</li>
+        @if (!string.IsNullOrEmpty(actionDisplay))
+        {
+            <li class="active">@actionDisplay</li>
+        }
+    </ol>
+</div>
