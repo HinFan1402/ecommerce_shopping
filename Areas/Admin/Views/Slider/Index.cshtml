@@ -3,6 +3,15 @@
 
 @{
     ViewData["Title"] = "Slider Management";
+
+    Paginate pager = new Paginate();
+    int pageNo = 0;
+
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
 }
 
 <div class="container mt-4">
