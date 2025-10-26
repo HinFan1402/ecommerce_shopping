@@ -70,7 +70,7 @@ namespace ecommerce_shopping.Areas.Admin.Controllers
         public async Task<IActionResult> Create(ProductModel product)
         {
             ViewBag.Categories = new SelectList(_dataContext.Categories, "Id", "Name", product.CategoryId);
-            ViewBag.Brands = new SelectList(_dataContext.Brands, "Id", "Name", product.BrandId);
+            ViewBag.Products = new SelectList(_dataContext.Products, "Id", "Name", product.Id);
             if (ModelState.IsValid)
             {
                 product.Slug = product.Name.Replace(" ", "-");

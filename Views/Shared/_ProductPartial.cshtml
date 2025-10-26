@@ -27,7 +27,7 @@
                 @if(item.Quantity>0){
                 <button class="btn btn-light border w-100 mb-2 add-to-cart" data-product-id="@item.Id">
                     <i class="fa fa-shopping-cart"></i> Thêm giỏ hàng
-                    </button>
+                </button>
                 }
                 else
                 {
@@ -39,14 +39,14 @@
                 }
                 @if (User.Identity.IsAuthenticated)
                 {
-                    <div class="d-flex justify-content-between gap-2">
+                <div class="d-flex justify-content-between gap-2">
                         <a href="#" class="btn btn-sm btn-light border flex-fill wishlist-btn" style="color:#666;" data-product-id="@item.Id">
-                            <i class="fa fa-plus-square"></i> Add to wishlist
-                        </a>
+                        <i class="fa fa-plus-square"></i> Add to wishlist
+                    </a>
                         <a href="#" class="btn btn-sm btn-light border flex-fill compare-btn" style="color:#666;" data-product-id="@item.Id">
-                            <i class="fa fa-plus-square"></i> Add to compare
-                        </a>
-                    </div>
+                        <i class="fa fa-plus-square"></i> Add to compare
+                    </a>
+                </div>
                 }
 
             </div>
