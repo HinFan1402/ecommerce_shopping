@@ -22,6 +22,7 @@ namespace ecommerce_shopping.Areas.Admin.Controllers
         [Route("Index")]
         public async Task<IActionResult> Index()
         {
+
             return View(await _dataContext.Roles.OrderByDescending(b => b.Id).ToListAsync());
         }
         [Route("Create")]

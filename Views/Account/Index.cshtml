@@ -1,0 +1,95 @@
+﻿@model AppUserModel
+@{
+    ViewData["Title"] = "Thông tin tài khoản";
+}
+<div class="d-flex justify-content-between align-items-center mb-1 custom-breadcrumb">
+    <ol class="breadcrumb mb-0 pb-0">
+        <li><a href="#" class="admin-link"><i class="fa fa-home"></i>Trang chủ</a></li>
+        <li class="active">Tài khoản</li>
+    </ol>
+</div>
+<div class="container" style="max-width: 600px; margin-top: 60px;">
+    <div class="panel panel-default" style="border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+        <div class="panel-heading text-center"
+             style="background: linear-gradient(45deg, #f4b400, #fdd835); color: white; border-top-left-radius: 12px; border-top-right-radius: 12px; padding: 30px 15px;">
+
+            <div style="background: rgba(255,255,255,0.25); display: inline-block; padding: 15px; border-radius: 50%;">
+                <i class="fa fa-user fa-4x"></i>
+            </div>
+            <h3 style="margin-top: 15px; font-weight: 600;">Thông tin tài khoản</h3>
+            <p style="font-size: 13px; color: #fff8e1;">Cập nhật thông tin cá nhân của bạn tại đây</p>
+        </div>
+
+        <div class="panel-body" style="padding: 30px;">
+            <form asp-action="UpdateInfoAccount" method="post" class="form-horizontal">
+
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><i class="fa fa-user"></i> Tên đăng nhập</label>
+                    <div class="col-sm-9">
+                        <input asp-for="UserName" class="form-control" placeholder="Nhập tên đăng nhập" required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><i class="fa fa-envelope"></i> Email</label>
+                    <div class="col-sm-9">
+                        <input asp-for="Email" class="form-control" readonly style="background:#f5f5f5; border-color:#ddd; cursor:not-allowed;" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"><i class="fa fa-phone"></i> Số điện thoại</label>
+                    <div class="col-sm-9">
+                        <input asp-for="PhoneNumber" class="form-control" placeholder="Nhập số điện thoại" />
+                    </div>
+                </div>
+
+                <div class="form-group text-center" style="margin-top: 35px;">
+                    <button type="submit" class="btn btn-primary btn-lg btn-save" style="border-radius:8px">
+                        <i class="fa fa-save"></i> Lưu thay đổi
+                    </button>
+                </div>
+
+                @if (TempData["success"] != null)
+                {
+                    <div class="alert alert-success text-center" style="margin-top: 20px;">
+                        <i class="fa fa-check-circle"></i> @TempData["success"]
+                    </div>
+                }
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background: #f8f9fa;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
+    .panel {
+        border: none;
+    }
+
+    .form-control {
+        border-radius: 6px;
+        box-shadow: none;
+        transition: 0.2s;
+    }
+
+        .form-control:focus {
+            border-color: #f4b400;
+            box-shadow: 0 0 6px rgba(244,180,0,0.4);
+        }
+
+
+        .btn-save:hover {
+            background: #286090;
+            transform: translateY(-2px);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+        }
+
+    .panel-heading i.fa-user {
+        color: #fff;
+    }
+</style>

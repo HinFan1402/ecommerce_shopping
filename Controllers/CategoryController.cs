@@ -20,6 +20,7 @@ namespace ecommerce_shopping.Controllers
             var productByCategory = _datacontext.Products.Where(p => p.CategoryId == category.Id);
 
             return View(await productByCategory.OrderByDescending(p => p.Id).ToListAsync());
+
         }
     }
 }

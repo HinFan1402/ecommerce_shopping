@@ -1,9 +1,11 @@
 ﻿using ecommerce_shopping.Models;
+using ecommerce_shopping.Models.ViewModels;
 using ecommerce_shopping.Repository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace ecommerce_shopping.Controllers
 {
@@ -19,11 +21,27 @@ namespace ecommerce_shopping.Controllers
             _datacontext = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(ProductFilterViewModel filter)
         {
-            var products= _datacontext.Products.ToList();
-            var activeSliders =_datacontext.Sliders.Where(s => s.Status == 1).ToList();
-            ViewBag.ActiveSliders = activeSliders;
+            // Set current controller and action for filter
+            filter.CurrentController = "Home";
+            filter.CurrentAction = "Index";
+
+            // Get products with filters applied
+            var query = _datacontext.Products
+                .Include(p => p.Category)
+                .Include(p => p.Brand)
+                .AsQueryable();
+
+            // Apply filters
+            query = query.ApplyFilters(filter);
+
+            var products = query.ToList();
+
+            // Pass filter to view for displaying current state
+            ViewBag.Filter = filter;
+            ViewBag.Slider = await _datacontext.Sliders.Where(s => s.Status == 1).ToListAsync();
+
             return View(products);
         }
 
@@ -39,8 +57,11 @@ namespace ecommerce_shopping.Controllers
             {
                 return View("NotFound");
             }
-            else
-                return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+
+            return View(new ErrorViewModel
+            {
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+            });
         }
         [HttpPost]
         public async Task<IActionResult> AddToWishList(int Id, WishListModel wishList)

@@ -13,10 +13,14 @@ namespace ecommerce_shopping.Models
         [Required, MinLength(4, ErrorMessage = "Yêu cầu nhập mô tả sản phẩm!")]
         public string Description { get; set; }
         public string Slug { get; set; }
+        // giá bán
         [Required]
         [Range(1, double.MaxValue, ErrorMessage = "Yêu cầu nhập giá sản phẩm!")]
         [DisplayFormat(DataFormatString = "{0:0.##}", ApplyFormatInEditMode = true)]
         public decimal Price { get; set; }
+        // giá nhập
+        [DisplayFormat(DataFormatString = "{0:0.##}", ApplyFormatInEditMode = true)]
+        public decimal InPrice { get; set; }
         [Required, Range(1, int.MaxValue, ErrorMessage = "Chọn 1 thương hiệu")]
         public int BrandId { get; set; }
         public int Quantity { get; set; } = 0;

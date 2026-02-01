@@ -22,7 +22,7 @@ namespace ecommerce_shopping.Areas.Admin.Controllers
             _webHostEnviroment = webHostEnviroment;
         }
         [Route("Index")]
-        [Route("Index")]
+     
         public async Task<IActionResult> Index(int pg = 1)
         {
             List<SliderModel> allSliders = await _dataContext.Sliders.ToListAsync();

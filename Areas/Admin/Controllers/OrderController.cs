@@ -22,22 +22,27 @@ namespace ecommerce_shopping.Areas.Admin.Controllers
         [Route("Index")]
         public async Task<IActionResult> Index(int pg = 1)
         {
-            List<OrderModel> Order = _dataContext.Orders.ToList();
-
-
             const int pageSize = 10;
 
             if (pg < 1)
             {
                 pg = 1;
             }
-            int recsCount = Order.Count();
+
+            // Count on DB side
+            int recsCount = await _dataContext.Orders.CountAsync();
 
             var pager = new Paginate(recsCount, pg, pageSize);
 
             int recSkip = (pg - 1) * pageSize;
 
-            var data = Order.Skip(recSkip).Take(pager.PageSize).ToList();
+            // Load only the page of data we need, order by a deterministic column
+            var data = await _dataContext.Orders
+                .AsNoTracking()
+                .OrderByDescending(o => o.CreateDate)
+                .Skip(recSkip)
+                .Take(pager.PageSize)
+                .ToListAsync();
 
             var viewModel = new TPaginateViewModel<OrderModel>
             {
@@ -50,6 +55,8 @@ namespace ecommerce_shopping.Areas.Admin.Controllers
         [Route("Edit")]
         public async Task<IActionResult> View(string orderCode)
         {
+            // Use async read and AsNoTracking for read-only values
+            ViewBag.Order = await _dataContext.Orders.AsNoTracking().FirstOrDefaultAsync(o => o.OrderCode == orderCode);
             var detailOrder = await _dataContext.OrderDetails.Include(od => od.Product).Where(od => od.OrderCode == orderCode).ToListAsync();
             return View(detailOrder);
         }

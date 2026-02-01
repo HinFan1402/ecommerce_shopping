@@ -1,9 +1,7 @@
-﻿<script>
+﻿
 
     $('.add-to-cart').click(function () {
 				var Id = $(this).data("product_id");
-
-    //alert(product_id);
 
                 $.ajax({
                     type: "POST",
@@ -20,4 +18,3 @@
 				});
 			});
 
-</script>

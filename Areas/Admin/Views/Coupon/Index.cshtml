@@ -1,0 +1,164 @@
+﻿@model CouponModel
+@{
+    ViewData["Title"] = "Manage Coupon";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 ">
+
+            <!-- BẢNG COUPON -->
+            <div class="panel panel-default" style="margin-top:30px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+                <div class="panel-heading" style="background:#FE980F; color:white; font-weight:600; font-size:18px;">
+                    <i class="glyphicon glyphicon-list"></i> Danh sách mã giảm giá
+                </div>
+
+                <div class="panel-body table-responsive">
+                    <table class="table table-bordered table-hover" id="myTable" style="font-size:16px;">
+                        <thead style="background:#f7f7f7;">
+                            <tr>
+                                <th>Mã Coupon</th>
+                                <th>Chi tiết</th>
+                                <th>Ngày áp dụng</th>
+                                <th>Ngày hết hạn</th>
+                                <th>Giá trị</th>
+                                <th>Kích hoạt</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.Coupons != null)
+                            {
+                                foreach (var coupon in ViewBag.Coupons)
+                                {
+                                    <tr>
+                                        <td>@coupon.CouponCode</td>
+                                        <td>@coupon.Description</td>
+                                        <td>@coupon.DateStart.ToString("dd-MM-yyyy")</td>
+                                        <td>@coupon.DateExpired.ToString("dd-MM-yyyy")</td>
+                                        <td>@string.Format("{0:N0}₫", coupon.PriceCoupon)</td>
+                                        <td>
+                                            <select name="Status" class="form-control input-sm">
+                                                <option value="1" >Kích hoạt</option>
+                                                <option value="0" >Ẩn</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            @if (coupon.DateExpired < DateTime.Now)
+                                            {
+                                                <span class="label label-danger">Hết hạn</span>
+                                            }
+                                            else
+                                            {
+                                                var remaining = (coupon.DateExpired - DateTime.Now).Days;
+                                                if (remaining == 0)
+                                                {
+                                                    <span class="label label-warning">Hôm nay</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="label label-success">@remaining ngày còn lại</span>
+                                                }
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted">Chưa có mã giảm giá nào</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- FORM THÊM COUPON -->
+            <div class="panel panel-default" style="border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.08); margin-top:25px;">
+                <div class="panel-heading" style="background:#007bff; color:white; font-weight:600; font-size:18px;">
+                    <i class="glyphicon glyphicon-plus-sign"></i> Thêm mã giảm giá mới
+                </div>
+
+                <div class="panel-body">
+                    <form autocomplete="off" asp-controller="Coupon" asp-action="Create" enctype="multipart/form-data" class="form-horizontal">
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Mã Coupon</label>
+                            <div class="col-sm-9">
+                                <input asp-for="CouponCode" class="form-control input-lg" placeholder="Nhập mã giảm giá..." />
+                                <span asp-validation-for="CouponCode" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Chi tiết</label>
+                            <div class="col-sm-9">
+                                <textarea asp-for="Description" class="form-control input-lg" rows="2" placeholder="Mô tả chi tiết..."></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Giá trị</label>
+                            <div class="col-sm-9">
+                                <input asp-for="PriceCoupon" class="form-control input-lg" placeholder="Nhập giá trị giảm (VD: 100000)" />
+                                <span asp-validation-for="PriceCoupon" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Ngày bắt đầu</label>
+                            <div class="col-sm-4">
+                                <input asp-for="DateStart" id="datepicker" class="form-control input-lg" placeholder="Chọn ngày bắt đầu" />
+                                <span asp-validation-for="DateStart" class="text-danger"></span>
+                            </div>
+
+                            <label class="col-sm-1 control-label text-center">Đến</label>
+                            <div class="col-sm-4">
+                                <input asp-for="DateExpired" id="datepicker2" class="form-control input-lg" placeholder="Chọn ngày hết hạn" />
+                                <span asp-validation-for="DateExpired" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Trạng thái</label>
+                            <div class="col-sm-9">
+                                <select name="Status" class="form-control input-lg">
+                                    <option value="1">Kích hoạt</option>
+                                    <option value="0">Ẩn</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group text-center">
+                            <button type="submit" class="btn btn-success btn-lg" style="width: 50%; border-radius:6px;">
+                                <i class="glyphicon glyphicon-floppy-disk"></i> Tạo mới
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/ui/1.14.0/jquery-ui.js"></script>
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script>
+        $(function () {
+            $("#datepicker, #datepicker2").datepicker({
+                changeYear: true,
+                showButtonPanel: true,
+                dateFormat: 'dd/mm/yy',
+                minDate: 0
+            });
+        });
+    </script>
+}

@@ -68,10 +68,10 @@
                             <a href="index.html"><img src="~/images/df772196-6283-4650-a3b4-7660714cea73_Untitled (1).jpg" alt="" style="width:100px" /></a>
                         </div>
                         </div>
-                    <div class="col-sm-8">
+                    <div class="col-sm-10">
                         <div class="shop-menu pull-right">
                             <ul class="nav navbar-nav">
-                                <li><a asp-controller="Account" asp-action="Login"><i class="fa fa-lock"></i> Login</a></li>
+                                
                                 @if (User.Identity?.IsAuthenticated ?? false)
                                 {
                                     @if (User.IsInRole("Admin"))
@@ -83,16 +83,16 @@
                                         </li>
                                     }
                                     
-                                     <li><a href="#"><i class="fa fa-user"></i> Account</a></li>
-                                    <li><a asp-action="WishList" asp-controller="Home"><i class="fa fa-star"></i> Wishlist</a></li>
-                                    <li><a asp-action="Compare" asp-controller="Home"><i class="fa fa-comments"></i> Compare</a></li>
-                                    <li><a href="checkout.html"><i class="fa fa-crosshairs"></i> Checkout</a></li>
-                                    <li><a href="cart.html"><i class="fa fa-shopping-cart"></i> Cart</a></li>
-                                    <li><a asp-controller="Account" asp-action="Logout"><i class="fa fa-lock">Hi, @User.Identity.Name,Logout</i></a></li>
+                                    
+                                    <li><a asp-action="WishList" asp-controller="Home"><i class="fa fa-star"></i> Yêu thích</a></li>
+                                    <li><a asp-action="Compare" asp-controller="Home"><i class="fa fa-comments"></i> So sánh</a></li>
+                                    <li><a asp-controller="Account"><i class="fa fa-shopping-cart"></i> Giỏ hàng</a></li>
+                                    <li><a asp-action="Index" asp-controller="Account"><i class="fa fa-male"></i> Tài khoản</a></li>
+                                    <li><a asp-controller="Account" asp-action="Logout"><i class="fa fa-lock"></i>Hi @User.Identity.Name,Logout</a></li>
                                 }
                                 else
                                 {
-                                    <li><a asp-controller="Account" asp-action="Login"><i class="fa fa-lock">Logint</i></a></li>
+                                    <li><a asp-controller="Account" asp-action="Login"><i class="fa fa-lock">Đăng nhập</i></a></li>
                                 }
                             </ul>
                         </div>

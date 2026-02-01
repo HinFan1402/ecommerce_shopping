@@ -1,0 +1,732 @@
+﻿@model ecommerce_shopping.Models.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard Thống Kê";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Morris CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+
+<style>
+    :root {
+        --primary-color: #f4b400;
+        --secondary-color: #286090;
+        --success-color: #5cb85c;
+        --danger-color: #d9534f;
+        --warning-color: #f0ad4e;
+        --info-color: #5bc0de;
+    }
+
+    .dashboard-header {
+        background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+        color: #fff;
+        padding: 30px 0;
+        margin-bottom: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+        .dashboard-header h1 {
+            margin: 0;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+    .filter-section {
+        background: #fff;
+        padding: 25px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        margin-bottom: 25px;
+    }
+
+    .stat-card {
+        background: #fff;
+        border-radius: 8px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        border-left: 4px solid var(--primary-color);
+    }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        .stat-card.primary {
+            border-left-color: var(--primary-color);
+        }
+
+        .stat-card.secondary {
+            border-left-color: var(--secondary-color);
+        }
+
+        .stat-card.success {
+            border-left-color: var(--success-color);
+        }
+
+        .stat-card.info {
+            border-left-color: var(--info-color);
+        }
+
+        .stat-card.warning {
+            border-left-color: var(--warning-color);
+        }
+
+        .stat-card.danger {
+            border-left-color: var(--danger-color);
+        }
+
+        .stat-card .stat-icon {
+            font-size: 48px;
+            opacity: 0.8;
+            float: right;
+        }
+
+        .stat-card.primary .stat-icon {
+            color: var(--primary-color);
+        }
+
+        .stat-card.secondary .stat-icon {
+            color: var(--secondary-color);
+        }
+
+        .stat-card.success .stat-icon {
+            color: var(--success-color);
+        }
+
+        .stat-card.info .stat-icon {
+            color: var(--info-color);
+        }
+
+        .stat-card.warning .stat-icon {
+            color: var(--warning-color);
+        }
+
+        .stat-card.danger .stat-icon {
+            color: var(--danger-color);
+        }
+
+        .stat-card h3 {
+            margin: 0 0 5px 0;
+            font-size: 14px;
+            color: #777;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .stat-card .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #333;
+            margin: 10px 0;
+        }
+
+        .stat-card .stat-label {
+            font-size: 13px;
+            color: #999;
+        }
+
+    .chart-container {
+        background: #fff;
+        border-radius: 8px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+
+        .chart-container h3 {
+            margin-top: 0;
+            color: var(--secondary-color);
+            font-weight: 700;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+    .table-container {
+        background: #fff;
+        border-radius: 8px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+
+        .table-container h3 {
+            margin-top: 0;
+            color: var(--secondary-color);
+            font-weight: 700;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+    .table-hover tbody tr:hover {
+        background-color: #f9f9f9;
+    }
+
+    .table > thead > tr > th {
+        background-color: var(--secondary-color);
+        color: #fff;
+        font-weight: 600;
+        border: none;
+    }
+
+    .top-product-item {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        margin-bottom: 15px;
+        background: #fff;
+        border-radius: 8px;
+        border: 1px solid #eee;
+        transition: all 0.3s ease;
+    }
+
+        .top-product-item:hover {
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            transform: translateX(5px);
+        }
+
+        .top-product-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 15px;
+        }
+
+    .top-product-info {
+        flex: 1;
+    }
+
+        .top-product-info h5 {
+            margin: 0 0 5px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .top-product-info .badge {
+            font-size: 12px;
+            padding: 4px 8px;
+        }
+
+    .btn-filter {
+        border-radius: 4px;
+        padding: 8px 20px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-filter.active {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #fff;
+        }
+
+    .date-range-inputs {
+        display: none;
+    }
+
+        .date-range-inputs.active {
+            display: block;
+        }
+
+    #loadingOverlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+    }
+
+        #loadingOverlay.active {
+            display: flex;
+        }
+
+    .spinner {
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid var(--primary-color);
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        animation: spin 1s linear infinite;
+    }
+
+    @@keyframes spin {
+        0%
+
+    {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+
+    }
+</style>
+
+<div id="loadingOverlay">
+    <div class="spinner"></div>
+</div>
+
+<div class="dashboard-header text-center">
+    <h1><i class="fa fa-dashboard"></i> Dashboard Thống Kê Bán Hàng</h1>
+    <p style="margin: 10px 0 0 0; font-size: 16px;">Quản lý và theo dõi hiệu suất kinh doanh</p>
+</div>
+
+<!-- Bộ lọc -->
+<div class="filter-section">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-default btn-filter active" data-filter="day">
+                    <i class="fa fa-calendar"></i> Hôm nay
+                </button>
+                <button type="button" class="btn btn-default btn-filter" data-filter="week">
+                    <i class="fa fa-calendar-o"></i> Tuần này
+                </button>
+                <button type="button" class="btn btn-default btn-filter" data-filter="month">
+                    <i class="fa fa-calendar-check-o"></i> Tháng này
+                </button>
+                <button type="button" class="btn btn-default btn-filter" data-filter="year">
+                    <i class="fa fa-calendar-plus-o"></i> Năm nay
+                </button>
+                <button type="button" class="btn btn-default btn-filter" data-filter="custom">
+                    <i class="fa fa-calendar-times-o"></i> Tùy chỉnh
+                </button>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="date-range-inputs">
+                <div class="row">
+                    <div class="col-xs-6">
+                        <input type="date" id="fromDate" class="form-control" value="@Model.FromDate?.ToString("yyyy-MM-dd")">
+                    </div>
+                    <div class="col-xs-6">
+                        <input type="date" id="toDate" class="form-control" value="@Model.ToDate?.ToString("yyyy-MM-dd")">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Thống kê tổng quan (không đổi) -->
+<!-- Thống kê tổng quan (không đổi) -->
+<div class="row">
+    <div class="col-md-4">
+        <div class="stat-card primary">
+            <i class="fa fa-list-alt stat-icon"></i>
+            <h3>Tổng Danh Mục</h3>
+            <div class="stat-value">@Model.TotalCategories</div>
+            <div class="stat-label">Danh mục sản phẩm</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card info">
+            <i class="fa fa-tags stat-icon"></i>
+            <h3>Tổng Thương Hiệu</h3>
+            <div class="stat-value">@Model.TotalBrands</div>
+            <div class="stat-label">Thương hiệu</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card warning">
+            <i class="fa fa-cubes stat-icon"></i>
+            <h3>Tổng Sản Phẩm</h3>
+            <div class="stat-value">@Model.TotalProducts</div>
+            <div class="stat-label">Sản phẩm trong kho</div>
+        </div>
+    </div>
+</div>
+
+<!-- Thống kê đơn hàng (thay đổi theo filter) -->
+<div class="row">
+    <div class="col-md-3">
+        <div class="stat-card secondary">
+            <i class="fa fa-shopping-cart stat-icon"></i>
+            <h3>Tổng Đơn Hàng</h3>
+            <div class="stat-value" id="totalOrders">@Model.TotalOrders</div>
+            <div class="stat-label">Đơn hàng</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card warning">
+            <i class="fa fa-clock-o stat-icon"></i>
+            <h3>Đơn Hàng Mới</h3>
+            <div class="stat-value" id="newOrders">@Model.NewOrders</div>
+            <div class="stat-label">Chờ xử lý</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card info">
+            <i class="fa fa-check-circle stat-icon"></i>
+            <h3>Đã Duyệt</h3>
+            <div class="stat-value" id="approvedOrders">@Model.ApprovedOrders</div>
+            <div class="stat-label">Đã xác nhận</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card success">
+            <i class="fa fa-truck stat-icon"></i>
+            <h3>Đã Giao</h3>
+            <div class="stat-value" id="deliveredOrders">@Model.DeliveredOrders</div>
+            <div class="stat-label">Hoàn thành</div>
+        </div>
+    </div>
+</div>
+
+<!-- Thống kê doanh thu và lợi nhuận -->
+<div class="row">
+    <div class="col-md-4">
+        <div class="stat-card success">
+            <i class="fa fa-money stat-icon"></i>
+            <h3>Tổng Doanh Thu</h3>
+            <div class="stat-value" id="totalRevenue">@Model.TotalRevenue.ToString("N0") đ</div>
+            <div class="stat-label">Doanh thu</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card primary">
+            <i class="fa fa-line-chart stat-icon"></i>
+            <h3>Tổng Lợi Nhuận</h3>
+            <div class="stat-value" id="totalProfit">@Model.TotalProfit.ToString("N0") đ</div>
+            <div class="stat-label">Lợi nhuận</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card info">
+            <i class="fa fa-shopping-bag stat-icon"></i>
+            <h3>Sản Phẩm Đã Bán</h3>
+            <div class="stat-value" id="totalProductsSold">@Model.TotalProductsSold</div>
+            <div class="stat-label">Sản phẩm</div>
+        </div>
+    </div>
+</div>
+
+<!-- Biểu đồ doanh số -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="chart-container">
+            <h3><i class="fa fa-bar-chart"></i> Biểu Đồ Doanh Số Bán Hàng</h3>
+            <div id="salesChart" style="height: 400px;"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Bảng thống kê danh mục và sản phẩm -->
+<div class="row">
+    <div class="col-md-6">
+        <div class="table-container">
+            <h3><i class="fa fa-list"></i> Thống Kê Theo Danh Mục</h3>
+            <div class="table-responsive">
+                <table class="table table-hover" id="categoryStatsTable">
+                    <thead>
+                        <tr>
+                            <th>Danh Mục</th>
+                            <th class="text-center">Số SP</th>
+                            <th class="text-center">Đã Bán</th>
+                            <th class="text-right">Doanh Thu</th>
+                            <th class="text-right">Lợi Nhuận</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var cat in Model.CategoryStatistics)
+                        {
+                            <tr>
+                                <td><strong>@cat.CategoryName</strong></td>
+                                <td class="text-center">@cat.TotalProducts</td>
+                                <td class="text-center"><span class="badge badge-primary">@cat.QuantitySold</span></td>
+                                <td class="text-right"><strong>@cat.Revenue.ToString("N0") đ</strong></td>
+                                <td class="text-right"><span class="text-success"><strong>@cat.Profit.ToString("N0") đ</strong></span></td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr style="background-color: #f9f9f9; font-weight: bold;">
+                            <td>TỔNG CỘNG</td>
+                            <td class="text-center">@Model.CategoryStatistics.Sum(c => c.TotalProducts)</td>
+                            <td class="text-center"><span class="badge badge-primary">@Model.CategoryStatistics.Sum(c => c.QuantitySold)</span></td>
+                            <td class="text-right"><strong>@Model.CategoryStatistics.Sum(c => c.Revenue).ToString("N0") đ</strong></td>
+                            <td class="text-right"><span class="text-success"><strong>@Model.CategoryStatistics.Sum(c => c.Profit).ToString("N0") đ</strong></span></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="table-container">
+            <h3><i class="fa fa-cube"></i> Thống Kê Theo Sản Phẩm (Top 10)</h3>
+            <div class="table-responsive">
+                <table class="table table-hover" id="productStatsTable">
+                    <thead>
+                        <tr>
+                            <th>Sản Phẩm</th>
+                            <th class="text-center">Đã Bán</th>
+                            <th class="text-right">Doanh Thu</th>
+                            <th class="text-right">Lợi Nhuận</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var product in Model.ProductStatistics.Take(10))
+                        {
+                            <tr>
+                                <td>
+                                    <strong>@product.ProductName</strong><br>
+                                    <small class="text-muted">@product.CategoryName - @product.BrandName</small>
+                                </td>
+                                <td class="text-center"><span class="badge badge-warning">@product.QuantitySold</span></td>
+                                <td class="text-right"><strong>@product.Revenue.ToString("N0") đ</strong></td>
+                                <td class="text-right"><span class="text-success"><strong>@product.Profit.ToString("N0") đ</strong></span></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sản phẩm bán chạy nhất -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="table-container">
+            <h3><i class="fa fa-fire"></i> Top 10 Sản Phẩm Bán Chạy Nhất</h3>
+            <div class="row">
+                @foreach (var product in Model.TopSellingProducts)
+                {
+                    <div class="col-md-6">
+                        <div class="top-product-item">
+                            <img src="~/media/products/@product.ProductImage" alt="@product.ProductName" onerror="this.src='/media/products/noimage.jpg'">
+                            <div class="top-product-info">
+                                <h5>@product.ProductName</h5>
+                                <div>
+                                    <span class="badge badge-primary">Đã bán: @product.QuantitySold</span>
+                                    <span class="badge badge-success">Doanh thu: @product.Revenue.ToString("N0") đ</span>
+                                </div>
+                                <div style="margin-top: 5px;">
+                                    <span class="badge badge-warning">Lợi nhuận: @product.Profit.ToString("N0") đ</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Raphael JS (required by Morris) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.3.0/raphael.min.js"></script>
+    <!-- Morris JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+
+    <script>
+        var currentFilter = 'day';
+        var morrisChart;
+
+        $(document).ready(function () {
+            // Khởi tạo biểu đồ
+            initChart(@Html.Raw(Json.Serialize(Model.SalesChart)));
+
+            // Xử lý click filter buttons
+            $('.btn-filter').on('click', function () {
+                $('.btn-filter').removeClass('active');
+                $(this).addClass('active');
+
+                currentFilter = $(this).data('filter');
+
+                if (currentFilter === 'custom') {
+                    $('.date-range-inputs').addClass('active');
+                } else {
+                    $('.date-range-inputs').removeClass('active');
+                    loadDashboardData(currentFilter);
+                }
+            });
+
+            // Xử lý thay đổi date range
+            $('#fromDate, #toDate').on('change', function () {
+                if (currentFilter === 'custom') {
+                    var fromDate = $('#fromDate').val();
+                    var toDate = $('#toDate').val();
+
+                    if (fromDate && toDate) {
+                        loadDashboardData('custom', fromDate, toDate);
+                    }
+                }
+            });
+        });
+
+        function initChart(data) {
+            if (morrisChart) {
+                morrisChart.setData(data);
+                return;
+            }
+
+            morrisChart = Morris.Bar({
+                element: 'salesChart',
+                data: data,
+                xkey: 'label',
+                ykeys: ['revenue', 'profit', 'quantity'],
+                labels: ['Doanh Thu (đ)', 'Lợi Nhuận (đ)', 'Số Lượng'],
+                barColors: ['#f4b400', '#286090', '#5cb85c'],
+                hideHover: 'auto',
+                resize: true,
+                gridTextSize: 12,
+                barSizeRatio: 0.6,
+                xLabelAngle: 45,
+                parseTime: false,
+                hoverCallback: function (index, options, content, row) {
+                    return '<div style="padding: 10px;">' +
+                           '<strong>' + row.label + '</strong><br>' +
+                           'Doanh thu: <strong>' + formatMoney(row.revenue) + ' đ</strong><br>' +
+                           'Lợi nhuận: <strong>' + formatMoney(row.profit) + ' đ</strong><br>' +
+                           'Số lượng: <strong>' + row.quantity + '</strong>' +
+                           '</div>';
+                }
+            });
+        }
+
+        function loadDashboardData(filterType, fromDate, toDate) {
+            $('#loadingOverlay').addClass('active');
+
+            var url = '@Url.Action("GetChartData", "Dashboard")';
+            var params = { filterType: filterType };
+
+            if (fromDate && toDate) {
+                params.fromDate = fromDate;
+                params.toDate = toDate;
+            }
+
+            $.ajax({
+                url: url,
+                type: 'GET',
+                data: params,
+                success: function (response) {
+                    if (response.success) {
+                        // Cập nhật biểu đồ
+                        morrisChart.setData(response.data);
+
+                        // Cập nhật số liệu
+                        updateStatistics(response.summary);
+                        updateCategoryTable(response.categoryStats);
+                        updateProductTable(response.productStats);
+                        updateTopProducts(response.topProducts);
+                    }
+                },
+                error: function () {
+                    alert('Có lỗi xảy ra khi tải dữ liệu!');
+                },
+                complete: function () {
+                    $('#loadingOverlay').removeClass('active');
+                }
+            });
+        }
+
+        function updateStatistics(summary) {
+            $('#totalOrders').text(summary.totalOrders);
+            $('#newOrders').text(summary.newOrders);
+            $('#approvedOrders').text(summary.approvedOrders);
+            $('#deliveredOrders').text(summary.deliveredOrders);
+            $('#totalRevenue').text(formatMoney(summary.totalRevenue) + ' đ');
+            $('#totalProfit').text(formatMoney(summary.totalProfit) + ' đ');
+            $('#totalProductsSold').text(summary.totalProductsSold);
+        }
+
+        function updateCategoryTable(categories) {
+            var tbody = $('#categoryStatsTable tbody');
+            tbody.empty();
+
+            var totalProducts = 0;
+            var totalSold = 0;
+            var totalRevenue = 0;
+            var totalProfit = 0;
+
+            $.each(categories, function (index, cat) {
+                totalProducts += cat.totalProducts;
+                totalSold += cat.quantitySold;
+                totalRevenue += cat.revenue;
+                totalProfit += cat.profit;
+
+                var row = '<tr>' +
+                    '<td><strong>' + cat.categoryName + '</strong></td>' +
+                    '<td class="text-center">' + cat.totalProducts + '</td>' +
+                    '<td class="text-center"><span class="badge badge-primary">' + cat.quantitySold + '</span></td>' +
+                    '<td class="text-right"><strong>' + formatMoney(cat.revenue) + ' đ</strong></td>' +
+                    '<td class="text-right"><span class="text-success"><strong>' + formatMoney(cat.profit) + ' đ</strong></span></td>' +
+                    '</tr>';
+                tbody.append(row);
+            });
+
+            // Thêm dòng tổng
+            var footerRow = '<tr style="background-color: #f9f9f9; font-weight: bold;">' +
+                '<td>TỔNG CỘNG</td>' +
+                '<td class="text-center">' + totalProducts + '</td>' +
+                '<td class="text-center"><span class="badge badge-primary">' + totalSold + '</span></td>' +
+                '<td class="text-right"><strong>' + formatMoney(totalRevenue) + ' đ</strong></td>' +
+                '<td class="text-right"><span class="text-success"><strong>' + formatMoney(totalProfit) + ' đ</strong></span></td>' +
+                '</tr>';
+
+            $('#categoryStatsTable tfoot').html(footerRow);
+        }
+
+        function updateProductTable(products) {
+            var tbody = $('#productStatsTable tbody');
+            tbody.empty();
+
+            $.each(products.slice(0, 10), function (index, product) {
+                var row = '<tr>' +
+                    '<td>' +
+                    '<strong>' + product.productName + '</strong><br>' +
+                    '<small class="text-muted">' + product.categoryName + ' - ' + product.brandName + '</small>' +
+                    '</td>' +
+                    '<td class="text-center"><span class="badge badge-warning">' + product.quantitySold + '</span></td>' +
+                    '<td class="text-right"><strong>' + formatMoney(product.revenue) + ' đ</strong></td>' +
+                    '<td class="text-right"><span class="text-success"><strong>' + formatMoney(product.profit) + ' đ</strong></span></td>' +
+                    '</tr>';
+                tbody.append(row);
+            });
+        }
+
+        function updateTopProducts(products) {
+            var container = $('.top-product-item').parent().parent();
+            container.empty();
+
+            $.each(products, function (index, product) {
+                var html = '<div class="col-md-6">' +
+                    '<div class="top-product-item">' +
+                    '<img src="/media/products/' + product.productImage + '" alt="' + product.productName + '" onerror="this.src=\'/media/products/noimage.jpg\'">' +
+                    '<div class="top-product-info">' +
+                    '<h5>' + product.productName + '</h5>' +
+                    '<div>' +
+                    '<span class="badge badge-primary">Đã bán: ' + product.quantitySold + '</span>' +
+                    '<span class="badge badge-success">Doanh thu: ' + formatMoney(product.revenue) + ' đ</span>' +
+                    '</div>' +
+                    '<div style="margin-top: 5px;">' +
+                    '<span class="badge badge-warning">Lợi nhuận: ' + formatMoney(product.profit) + ' đ</span>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>';
+                container.append(html);
+            });
+        }
+
+        function formatMoney(number) {
+            return Math.round(number).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+    </script>
+}

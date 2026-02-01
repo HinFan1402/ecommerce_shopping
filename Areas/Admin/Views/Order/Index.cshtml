@@ -1,4 +1,5 @@
-﻿@model IEnumerable<OrderModel>
+﻿@using ecommerce_shopping.Models.ViewModels
+@model TPaginateViewModel<OrderModel>
 
 @{
     ViewData["Title"] = "Order Management";
@@ -87,7 +88,7 @@
 </div>
 
 @section Scripts {
-    <script>
+    <script> 
         $(document).ready(function () {
             $('.select-update-order').click(function () {
                 var orderCode = $(this).data("order-code");

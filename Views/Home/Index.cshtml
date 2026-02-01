@@ -2,7 +2,7 @@
 
 @{
 
-    var sliders = ViewBag.ActiveSliders as List<SliderModel> ?? new List<SliderModel>();
+    var sliders = ViewBag.Slider as List<SliderModel> ?? new List<SliderModel>();
 }
 
 <partial name="SliderPartial" model="@sliders" />
@@ -12,9 +12,14 @@
 </div>
 <div class="col-sm-9 padding-right">
     <div class="features_items">
+        <!--features_items-->
         <h2 class="title text-center">Features Items</h2>
+        <partial name="_ProductFilterPartial" model="ViewBag.Filter" />
         <partial name="_ProductPartial" />
-    </div>
+      
+    </div><!--features_items-->
+
+</div>
 </div>
 @section Scripts {
     <script>

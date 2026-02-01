@@ -195,7 +195,7 @@ namespace ecommerce_shopping.Areas.Admin.Controllers
         [HttpGet]
         [Route("AddQuantity")]
         public async Task<IActionResult> AddQuantity(int Id)
-        { 
+        {
             ViewBag.Product = _dataContext.Products.FirstOrDefault(p=>p.Id== Id);
             return View();
         }

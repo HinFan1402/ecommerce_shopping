@@ -1,50 +1,84 @@
 ﻿@model IEnumerable<OrderDetailModel>
+
 @{
-    ViewData["title"] = "List Order";
-
+    ViewData["Title"] = "Chi tiết đơn hàng";
     decimal total = 0;
-    decimal subtotal = 0;
-
+    int id = 1;
 }
-<h2>Chi tiết đơn hàng</h2>
-@if (Model.Any())
-{
-    <p><strong>User:</strong> @Model.FirstOrDefault().UserName</p>
-    <p><strong>Mã đơn hàng:</strong> @Model.FirstOrDefault().OrderCode</p>
 
-    <table class="table table-striped ">
-        <thead>
-            <tr>
+<div class="container mt-4">
+    <h3 class="mb-4 text-warning">Chi tiết đơn hàng</h3>
 
-                <th>Id</th>
-                <th>Product Name</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Subtotal</th>
-            </tr>
-        </thead>
-        <tbody>
-            <input type="hidden" asp-for="@Model.FirstOrDefault().OrderCode" class="getId" />
-            @foreach (var item in Model)
-            {
+    @if (Model.Any())
+    {
+        var order = ViewBag.Order;
 
-                total += item.Total;
-                <tr>
+        <div class="card shadow-sm p-4 mb-4">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Người dùng:</strong> @Model.First().UserName</p>
+                    <p><strong>Mã đơn hàng:</strong> @Model.First().OrderCode</p>
+                    <p><strong>Người nhận:</strong> @order.ShippingName</p>
+                    <p><strong>SĐT:</strong> @order.ShippingPhone</p>
+                </div>
+                <div class="col-md-6">
+                    <p>
+                        <strong>Địa chỉ giao hàng:</strong><br />
+                        @order.ShippingAddress,<br />
+                        @order.ShippingWard, @order.ShippingDistrict,<br />
+                        @order.ShippingProvince
+                    </p>
+                </div>
+            </div>
+        </div>
 
-                    <td>@item.Id</td>
-                    <td>@item.Product.Name</td>
-                    <td>@item.Price.ToString("#,##0 VND") </td>
-                    <td>@item.Quantity</td>
-                    <td>@item.Total.ToString("C") </td>
-                </tr>
-            }
-        </tbody>
-        }
-        <tfoot>
-            <tr>
-                <td colspan="5" class="text-right"><strong>Total:</strong></td>
-                <td><strong>@total.ToString("C") </strong></td>
-            </tr>
-        </tfoot>
-    </table>
-}
+        <div class="card shadow-sm p-3">
+            <table class="table table-bordered table-striped table-hover align-middle mb-0">
+                <thead class="table-danger text-center ">
+                    <tr>
+                        <th>STT</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Giá</th>
+                        <th>Số lượng</th>
+                        <th>Thành tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        total += item.Total;
+                        <tr>
+                            <td class="text-center">@id</td>
+                            <td>@item.Product.Name</td>
+                            <td class="text-end">@item.Price.ToString("#,##0") VND</td>
+                            <td class="text-center">@item.Quantity</td>
+                            <td class="text-end">@item.Total.ToString("#,##0") VND</td>
+                        </tr>
+                        id += 1;
+                    }
+                </tbody>
+                <tfoot class="table-light">
+                    <tr>
+                        <td colspan="4" class="text-end"><strong>Tổng tạm tính:</strong></td>
+                        <td class="text-end"><strong>@total.ToString("#,##0") VND</strong></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="text-end"><strong>Phí vận chuyển:</strong></td>
+                        <td class="text-end"><strong>@order.ShippingCost.ToString("#,##0") VND</strong></td>
+                    </tr>
+                    <tr class="table-warning">
+                        <td colspan="4" class="text-end"><strong>Tổng thanh toán:</strong></td>
+                        <td class="text-end text-danger">
+                            <strong>@((@ViewBag.Order.ShippingCost + total).ToString("#,##0") + " VND")</strong>
+
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning text-center">Không có dữ liệu đơn hàng nào.</div>
+    }
+</div>

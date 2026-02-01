@@ -1,13 +1,12 @@
 ﻿@model ProductQuantityModel
 @{
     ViewData["title"] = "Create Brand";
+    
 }
 <h2>Create Brand</h2>
 <div class="col-md-9">
     <form autocomplete="off" asp-action="UpdateQuantity" enctype="multipart/form-data">
 
-
-        
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input asp-for="ProductId" type="hidden" value="@ViewBag.Product.Id" class="form-control" />
         <div class="form-group">

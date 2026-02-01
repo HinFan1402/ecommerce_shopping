@@ -1,39 +1,121 @@
 ﻿@model LoginViewModel
 @{
-    ViewData["title"] = "Product Listed";
+    ViewData["title"] = "Login";
 }
+
 <section id="form">
-    <!--form-->
-    <div class="container">
+    <div class="container" style="max-width: 500px;">
         <div class="row">
-            <div class="col-sm-8 col-sm-offset-1">
-                <div class="login-form">
-                    <!--login form-->
-                    <h2>Login to your account</h2>
-                    <form asp-controller="Account" asp-action="Login">
+            <div class="col-sm-12">
+                <div class="login-form" style="
+                    background: #fff;
+                    border-radius: 10px;
+                    box-shadow: 3px 3px 15px rgba(0,0,0,0.1);
+                    padding: 40px 35px;
+                   ">
+
+                    <h2 class="text-center" style="
+                        font-weight: 600;
+                        color:  #f0ad4e;
+                        ">
+                        <i class="glyphicon glyphicon-log-in"></i> Đăng nhập tài khoản
+                    </h2>
+
+                    <hr style="border-top: 2px solid #f6d44c; width: 120px ;margin: 20px auto;">
+
+                    <form asp-controller="Account" asp-action="Login" method="post">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
                         <div class="form-group">
-                            <label>UserName</label>
-                            <input asp-for="UserName" class="form-control" />
+                            <label><i class="glyphicon glyphicon-user"></i> Tên đăng nhập</label>
+                            <input asp-for="UserName" class="form-control input-lg" placeholder="Nhập tên đăng nhập..." />
                             <span asp-validation-for="UserName" class="text-danger"></span>
                         </div>
+
                         <div class="form-group">
-                            <label>Password</label>
-                            <input asp-for="Password" class="form-control" />
+                            <label><i class="glyphicon glyphicon-lock"></i> Mật khẩu</label>
+                            <input asp-for="Password" type="password" class="form-control input-lg" placeholder="Nhập mật khẩu..." />
                             <span asp-validation-for="Password" class="text-danger"></span>
                         </div>
-                        <div class="form-group">
-                            <button class="btn btn-success">Login</button>
+
+                        <div class="form-group text-center" style="margin-top: 30px;">
+                            <button type="submit" class="btn btn-primary btn-lg" style="
+                                background-color: #337ab7;
+                                border: none;
+                                border-radius: 6px;
+                                padding: 10px 40px;
+                                transition: 0.3s;">
+                                <i class="glyphicon glyphicon-log-in"></i> Đăng nhập
+                            </button>
+                        </div>
+
+                        <!-- Nút đăng nhập bằng Google -->
+                        <div class="form-group text-left" style="margin-top: 15px;">
+                            <a asp-action="LoginByGoogle" asp-controller="Account" class="btn btn-google">
+                                <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google Logo" width="20" height="20" style="margin-right:8px; vertical-align:middle;">
+                                Đăng nhập bằng Google
+                            </a>
                         </div>
                     </form>
-                    <a  asp-action="Register" asp-controller="Account" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-plus"></span> Register</a>
-                </div><!--/login form-->
+
+                    <div class="text-center" style="margin-top: 25px;">
+                        <a asp-action="Register" asp-controller="Account" class="btn btn-warning btn-sm" style="border-radius: 5px;">
+                            <span class="glyphicon glyphicon-plus"></span> Đăng ký
+                        </a>
+                        <a asp-action="ForgotPass" asp-controller="Account" class="btn btn-warning btn-sm" style="border-radius: 5px; margin-left: 8px;">
+                            <span class="glyphicon glyphicon-question-sign"></span> Quên mật khẩu
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</section><!--/form-->
+</section>
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+
+<style>
+    .btn-primary:hover {
+        background-color: #286090;
+        transform: translateY(-2px);
+    }
+
+    .btn-warning {
+        display: inline-block;
+        background-color: #f0ad4e;
+        border: none;
+        color: #333;
+    }
+
+        .btn-warning:hover {
+            background-color: #f9e37a;
+        }
+
+    /* Nút Google */
+    .btn-google {
+        display: inline-block;
+        background-color: #fff;
+        border: 1px solid #dadce0;
+        border-radius: 6px;
+        color: #555;
+        font-weight: 500;
+        text-decoration: none;
+        padding: 10px 20px;
+        transition: 0.3s;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+        .btn-google:hover {
+            background-color: #f7f7f7;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+            text-decoration: none;
+        }
+
+        .btn-google img {
+            vertical-align: middle;
+        }
+</style>

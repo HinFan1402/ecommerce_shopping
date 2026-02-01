@@ -2,42 +2,304 @@
 @{
     ViewData["title"] = "Sign up";
 }
+
 <section id="form">
-    <!--form-->
-    <div class="container">
+    <div class="container" style="max-width: 500px;">
         <div class="row">
-            <div class="col-sm-8 col-sm-offset-1">
-                <div class="signup-form">
-                    <!--sign up form-->
-                    <h2>New User Signup!</h2>
-                    <form asp-action="Register" asp-controller="Account">
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="col-sm-12">
+                <div class="signup-form" style="
+                    background: #fff;
+                    border-radius: 10px;
+                    box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+                    padding: 40px 35px;">
+                    <h2 class="text-center" style="font-weight: 600; color: #f0ad4e;">
+                        <i class="fa fa-user-plus"></i> Đăng ký tài khoản
+                    </h2>
+                    <hr style="border-top: 2px solid #f6d44c; width: 120px; margin: 20px auto;">
+
+                    <form id="registerForm" asp-action="Register" asp-controller="Account" method="post">
+                        <div id="errorSummary" class="alert alert-danger" style="display: none;"></div>
+
                         <div class="form-group">
-                            <label>UserName</label>
-                            <input asp-for="UserName" class="form-control" />
+                            <label><i class="fa fa-user"></i> Tên đăng nhập</label>
+                            <input asp-for="UserName" class="form-control input-lg" placeholder="Nhập tên đăng nhập..." />
                             <span asp-validation-for="UserName" class="text-danger"></span>
                         </div>
+
                         <div class="form-group">
-                            <label>Email</label>
-                            <input asp-for="Email" class="form-control" />
+                            <label><i class="fa fa-envelope"></i> Email</label>
+                            <input asp-for="Email" type="email" class="form-control input-lg" placeholder="Nhập email..." />
                             <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
+
                         <div class="form-group">
-                            <label>PassWord</label>
-                            <input asp-for="Password" class="form-control" />
+                            <label><i class="fa fa-lock"></i> Mật khẩu</label>
+                            <input asp-for="Password" type="password" class="form-control input-lg" placeholder="Nhập mật khẩu..." />
                             <span asp-validation-for="Password" class="text-danger"></span>
                         </div>
-                        <div class="form-group">
-                            <button class="btn btn-Primary">Register</button>
+
+                        <div class="form-group text-center" style="margin-top: 30px;">
+                            <button type="submit" class="btn btn-primary btn-lg" style="
+                                background-color: #337ab7;
+                                border: none;
+                                border-radius: 6px;
+                                padding: 10px 40px;
+                                transition: 0.3s;">
+                                <i class="fa fa-check"></i> Đăng ký
+                            </button>
                         </div>
                     </form>
-                </div><!--/sign up form-->
+
+                    <div class="text-center" style="margin-top: 25px;">
+                        <p style="color:#555;">Đã có tài khoản?</p>
+                        <a asp-action="Login" asp-controller="Account" class="btn btn-warning btn-sm" style="border-radius: 5px;">
+                            <i class="fa fa-sign-in"></i> Đăng nhập ngay
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</section><!--/form-->
+</section>
+
+<!-- OTP Modal -->
+<div class="modal fade" id="otpModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document" style="max-width: 450px; margin-top: 100px;">
+        <div class="modal-content" style="border-radius: 10px; box-shadow: 0 5px 25px rgba(0,0,0,0.2);">
+            <div class="modal-header" style="background: linear-gradient(135deg, #337ab7, #5bc0de); color: #fff; border-radius: 10px 10px 0 0; padding: 25px;">
+                <button type="button" class="close" data-dismiss="modal" style="color: #fff; opacity: 0.8;">
+                    <span>&times;</span>
+                </button>
+                <h4 class="modal-title text-center" style="font-weight: 600;">
+                    <i class="fa fa-shield"></i> Xác thực OTP
+                </h4>
+            </div>
+            <div class="modal-body" style="padding: 35px;">
+                <div class="text-center" style="margin-bottom: 25px;">
+                    <i class="fa fa-envelope-o" style="font-size: 48px; color: #f0ad4e;"></i>
+                    <p style="margin-top: 15px; color: #555; font-size: 14px;">
+                        Mã OTP đã được gửi đến email của bạn.<br>
+                        Vui lòng nhập mã 6 chữ số để hoàn tất đăng ký.
+                    </p>
+                </div>
+
+                <div id="otpError" class="alert alert-danger" style="display: none;"></div>
+                <div id="otpSuccess" class="alert alert-success" style="display: none;"></div>
+
+                <div class="form-group">
+                    <label style="font-weight: 600; color: #333;">
+                        <i class="fa fa-key"></i> Nhập mã OTP
+                    </label>
+                    <input type="text" id="otpInput" class="form-control input-lg text-center"
+                           placeholder="000000" maxlength="6"
+                           style="font-size: 24px; letter-spacing: 8px; font-weight: bold; border: 2px solid #ddd;" />
+                </div>
+
+                <div class="text-center" style="margin-top: 25px;">
+                    <button type="button" id="verifyOtpBtn" class="btn btn-primary btn-lg btn-block"
+                            style="background-color: #337ab7; border: none; border-radius: 6px; padding: 12px; font-weight: 600;">
+                        <i class="fa fa-check-circle"></i> Xác nhận
+                    </button>
+                </div>
+
+                <div class="text-center" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+                    <p style="color: #777; font-size: 13px; margin-bottom: 10px;">Không nhận được mã?</p>
+                    <button type="button" id="resendOtpBtn" class="btn btn-warning btn-sm"
+                            style="border-radius: 5px; padding: 8px 20px;">
+                        <i class="fa fa-refresh"></i> Gửi lại mã
+                    </button>
+                    <div id="resendTimer" style="margin-top: 10px; color: #999; font-size: 12px; display: none;">
+                        Vui lòng đợi <span id="countdown">60</span>s để gửi lại
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        var countdownTimer;
+        var countdownSeconds = 60;
+
+        $(document).ready(function () {
+            // Submit form đăng ký
+            $('#registerForm').on('submit', function (e) {
+                e.preventDefault();
+
+                $('#errorSummary').hide();
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    beforeSend: function() {
+                        $('#registerForm button[type="submit"]').prop('disabled', true)
+                            .html('<i class="fa fa-spinner fa-spin"></i> Đang xử lý...');
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#otpModal').modal('show');
+                            $('#otpInput').focus();
+                            startCountdown();
+                        } else {
+                            $('#errorSummary').text(response.message).show();
+                        }
+                    },
+                    error: function () {
+                        $('#errorSummary').text('Có lỗi xảy ra. Vui lòng thử lại.').show();
+                    },
+                    complete: function() {
+                        $('#registerForm button[type="submit"]').prop('disabled', false)
+                            .html('<i class="fa fa-check"></i> Đăng ký');
+                    }
+                });
+            });
+
+            // Xác thực OTP
+            $('#verifyOtpBtn').on('click', function () {
+                var otpCode = $('#otpInput').val().trim();
+
+                if (otpCode.length !== 6) {
+                    showOtpError('Vui lòng nhập đủ 6 chữ số');
+                    return;
+                }
+
+                $('#otpError, #otpSuccess').hide();
+
+                $.ajax({
+                    url: '@Url.Action("VerifyOTP", "Account")',
+                    type: 'POST',
+                    data: { otpCode: otpCode },
+                    beforeSend: function() {
+                        $('#verifyOtpBtn').prop('disabled', true)
+                            .html('<i class="fa fa-spinner fa-spin"></i> Đang xác thực...');
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            showOtpSuccess(response.message);
+                            setTimeout(function() {
+                                window.location.href = response.redirectUrl;
+                            }, 1500);
+                        } else {
+                            showOtpError(response.message);
+                            $('#otpInput').val('').focus();
+                        }
+                    },
+                    error: function () {
+                        showOtpError('Có lỗi xảy ra. Vui lòng thử lại.');
+                    },
+                    complete: function() {
+                        $('#verifyOtpBtn').prop('disabled', false)
+                            .html('<i class="fa fa-check-circle"></i> Xác nhận');
+                    }
+                });
+            });
+
+            // Gửi lại OTP
+            $('#resendOtpBtn').on('click', function () {
+                $('#otpError, #otpSuccess').hide();
+
+                $.ajax({
+                    url: '@Url.Action("ResendOTP", "Account")',
+                    type: 'POST',
+                    beforeSend: function() {
+                        $('#resendOtpBtn').prop('disabled', true)
+                            .html('<i class="fa fa-spinner fa-spin"></i> Đang gửi...');
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            showOtpSuccess(response.message);
+                            $('#otpInput').val('').focus();
+                            countdownSeconds = 60;
+                            startCountdown();
+                        } else {
+                            showOtpError(response.message);
+                        }
+                    },
+                    error: function () {
+                        showOtpError('Không thể gửi lại mã.');
+                    },
+                    complete: function() {
+                        $('#resendOtpBtn').prop('disabled', false)
+                            .html('<i class="fa fa-refresh"></i> Gửi lại mã');
+                    }
+                });
+            });
+
+            // Enter để submit OTP
+            $('#otpInput').on('keypress', function (e) {
+                if (e.which === 13) {
+                    $('#verifyOtpBtn').click();
+                }
+            });
+
+            // Chỉ cho phép nhập số
+            $('#otpInput').on('input', function () {
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+        });
+
+        function showOtpError(message) {
+            $('#otpError').text(message).show();
+            $('#otpSuccess').hide();
+        }
+
+        function showOtpSuccess(message) {
+            $('#otpSuccess').text(message).show();
+            $('#otpError').hide();
+        }
+
+        function startCountdown() {
+            $('#resendOtpBtn').prop('disabled', true);
+            $('#resendTimer').show();
+
+            countdownTimer = setInterval(function() {
+                countdownSeconds--;
+                $('#countdown').text(countdownSeconds);
+
+                if (countdownSeconds <= 0) {
+                    clearInterval(countdownTimer);
+                    $('#resendOtpBtn').prop('disabled', false);
+                    $('#resendTimer').hide();
+                    countdownSeconds = 60;
+                }
+            }, 1000);
+        }
+    </script>
 }
+
+<style>
+    .form-control:focus {
+        border-color: #f6d44c;
+        box-shadow: 0 0 6px rgba(246, 212, 76, 0.4);
+    }
+
+    .btn-primary:hover {
+        background-color: #286090;
+        transform: translateY(-2px);
+    }
+
+    .btn-warning {
+        background-color: #f0ad4e;
+        border: none;
+        color: #fff;
+    }
+
+        .btn-warning:hover {
+            background-color: #ec971f;
+        }
+
+    #otpInput:focus {
+        border-color: #337ab7;
+        box-shadow: 0 0 8px rgba(51, 122, 183, 0.4);
+    }
+
+    .modal-content {
+        border: none;
+    }
+</style>

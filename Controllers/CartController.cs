@@ -2,6 +2,7 @@
 using ecommerce_shopping.Models.ViewModel;
 using ecommerce_shopping.Repository;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.Eventing.Reader;
 
 namespace ecommerce_shopping.Controllers
@@ -16,14 +17,43 @@ namespace ecommerce_shopping.Controllers
 
         public IActionResult Index()
         {
-            List<CartItemModel> cartItem = HttpContext.Session.GetJson<List<CartItemModel>>("Cart") ?? new List<CartItemModel>();
-            CartItemViewModel cartItemVM = new()
+            var coupon_code = Request.Cookies["CouponTitle"];
+            List<CartItemModel> cartItems = HttpContext.Session.GetJson<List<CartItemModel>>("Cart") ?? new List<CartItemModel>();
+            CartItemViewModel cartVM = new()
             {
-                CartItems = cartItem,
-                GrandTotal = cartItem.Sum(x => x.Quantity * x.Price)
-
+                CartItems = cartItems,
+                GrandTotal = cartItems.Sum(x => x.Quantity * x.Price),
+                ShippingCost = 0
             };
-            return View(cartItemVM);
+
+            return View(cartVM);
+        }
+        [HttpPost]
+        public IActionResult CalculateShipping([FromBody] string province)
+        {
+            decimal shippingCost = 0;
+
+            // Danh sách các cách gọi HCM
+            var hcmNames = new List<string>
+            {
+                "Thành phố Hồ Chí Minh",
+                "Hồ Chí Minh",
+                "TP. Hồ Chí Minh",
+                "TP.HCM",
+                "HCM"
+            };
+
+            // Kiểm tra nếu thuộc HCM
+            if (hcmNames.Any(p => province.Contains(p, StringComparison.OrdinalIgnoreCase)))
+            {
+                shippingCost = 25000; // 25k cho nội thành HCM
+            }
+            else
+            {
+                shippingCost = 75000; // 75k cho ngoại tỉnh
+            }
+
+            return Json(new { shippingCost = shippingCost });
         }
         public IActionResult Checkout()
         {
@@ -84,7 +114,8 @@ namespace ecommerce_shopping.Controllers
                 cartItem.Quantity = product.Quantity;
                 TempData["error"] = "Quantity is max!";
             }
-            else {
+            else
+            {
                 ++cartItem.Quantity;
                 TempData["success"] = "Increase item succesfully!";
             }
@@ -97,7 +128,7 @@ namespace ecommerce_shopping.Controllers
             List<CartItemModel> cart = HttpContext.Session.GetJson<List<CartItemModel>>("Cart");
 
             cart.RemoveAll(p => p.ProductId == Id);
-            
+
             if (cart.Count == 0)
             {
                 HttpContext.Session.Remove("Cart");
@@ -109,6 +140,40 @@ namespace ecommerce_shopping.Controllers
             TempData["success"] = "Remove item succesfully!";
             return RedirectToAction("Index");
         }
+        [HttpPost]
+        public async Task<IActionResult> GetCoupon(string coupon_value)
+        {
+            try
+            {
+                var coupon = await _dataContext.Coupons.FirstOrDefaultAsync(x => x.CouponCode == coupon_value);
+
+                if (coupon == null)
+                    return Ok(new { success = false, message = "Coupon not existed" });
+
+                if (coupon.DateExpired < DateTime.Now)
+                    return Ok(new { success = false, message = "Coupon has expired" });
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Coupon applied successfully",
+                    priceCoupon = coupon.PriceCoupon,
+                    title = $"{coupon.CouponCode} | {coupon.Description}"
+                });
+            }
+            catch(Exception ex)
+            {
+
+            
+                Console.WriteLine("🔥 Lỗi server khi GetCoupon: " + ex.Message);
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+        
+
 
     }
+
+
 }
+

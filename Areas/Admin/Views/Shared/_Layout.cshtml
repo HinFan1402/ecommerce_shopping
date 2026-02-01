@@ -17,6 +17,8 @@
     <link href="~/backend/css/site.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.12.4/dist/sweetalert2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+
 
     <!-- ✅ DataTables core -->
     <link rel="stylesheet" href="https://cdn.datatables.net/2.1.3/css/dataTables.dataTables.min.css" />
@@ -49,7 +51,7 @@
                         </div>
                         <div class="mainmenu pull-left">
                             <ul class="nav navbar-nav collapse navbar-collapse">
-                                <li><a asp-controller="Product" asp-action="Index" class="active">Home</a></li>
+                                <li><a asp-controller="Dashboard" asp-action="Index" class="active">Dasboard</a></li>
                                 <li><a asp-controller="Product" asp-action="Index">Product</a></li>
                                 <li><a asp-controller="User" asp-action="Index">User</a></li>
                                 <li><a asp-controller="Order" asp-action="Index">Order</a></li>
@@ -58,8 +60,9 @@
                                 <li><a asp-controller="Slider" asp-action="Index">Slider</a></li>
                                 <li><a asp-controller="Role" asp-action="Index">Role</a></li>
                                 <li><a asp-controller="Contact" asp-action="Index">Contact</a></li>
-                            </ul>
-                        </div>>
+                                <li><a asp-controller="Coupon" asp-action="Index">Coupon</a></li>
+                            </ul>       
+                        </div>
                     </div>
                     <div class="col-sm-3">
                         <form asp-controller="Product" asp-action="Search" method="Post">
@@ -123,6 +126,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.26.3/dist/sweetalert2.all.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
     <Script>
         $(function(){
             var message='@TempData["success"]';

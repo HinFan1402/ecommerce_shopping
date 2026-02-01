@@ -11,5 +11,6 @@ namespace ecommerce_shopping.Models
         [NotMapped]
         [DataType(DataType.Password)]
         public string PassWordNoHash { get; set; }
+        public string Token { get; set; }
     }
 }

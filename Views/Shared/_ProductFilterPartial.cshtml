@@ -1,0 +1,356 @@
+﻿@model ecommerce_shopping.Models.ViewModels.ProductFilterViewModel
+
+<!-- Nút icon filter -->
+<div class="filter-toggle">
+    <button type="button" id="openFilterBtn" class="btn btn-outline-warning">
+        <i class="fa fa-filter"></i> Bộ lọc
+    </button>
+</div>
+
+<!-- Popup layer -->
+<div id="filterPopup" class="filter-popup">
+    <div class="filter-popup-content">
+        <span class="close-btn" id="closeFilterBtn">&times;</span>
+
+        <form method="get" id="filterForm"
+              action="@Url.Action(Model.CurrentAction, Model.CurrentController, Model.RouteValues)">
+            <!-- Giữ lại query -->
+            @if (Model.CategoryId.HasValue)
+            {
+                <input type="hidden" name="categoryId" value="@Model.CategoryId" />
+            }
+            @if (Model.BrandId.HasValue)
+            {
+                <input type="hidden" name="brandId" value="@Model.BrandId" />
+            }
+            @if (!string.IsNullOrEmpty(Model.SearchQuery))
+            {
+                <input type="hidden" name="search" value="@Model.SearchQuery" />
+            }
+
+            <!-- Sắp xếp -->
+            <div class="filter-box">
+                <h2><i class="fa fa-sort"></i> Sắp xếp</h2>
+                <select name="sortBy" class="form-control" id="sortBySelect">
+                    <option value="">-- Mặc định --</option>
+                    <option value="newest" selected='@(Model.SortBy == "newest" ? "selected" : null)'>Mới nhất</option>
+                    <option value="price-asc" selected='@(Model.SortBy == "price-asc" ? "selected" : null)'>Giá: Thấp → Cao</option>
+                    <option value="price-desc" selected='@(Model.SortBy == "price-desc" ? "selected" : null)'>Giá: Cao → Thấp</option>
+                    <option value="name-asc" selected='@(Model.SortBy == "name-asc" ? "selected" : null)'>Tên: A-Z</option>
+                    <option value="name-desc" selected='@(Model.SortBy == "name-desc" ? "selected" : null)'>Tên: Z-A</option>
+                    <option value="popular" selected='@(Model.SortBy == "popular" ? "selected" : null)'>Bán chạy nhất</option>
+                </select>
+            </div>
+
+            <!-- Khoảng giá -->
+            <div class="filter-box">
+                <h2><i class="fa fa-money"></i> Khoảng giá</h2>
+                <div class="price-range-wrapper">
+                    <div class="row" style="margin-bottom:10px;">
+                        <div class="col-xs-5">
+                            <input type="text" id="minPriceDisplay" class="form-control text-center" readonly
+                                   value="@(Model.MinPrice?.ToString("N0") ?? "0")đ" />
+                        </div>
+                        <div class="col-xs-2" style="line-height:34px;">—</div>
+                        <div class="col-xs-5">
+                            <input type="text" id="maxPriceDisplay" class="form-control text-center" readonly
+                                   value="@(Model.MaxPrice?.ToString("N0") ?? "60.000.000")đ" />
+                        </div>
+                    </div>
+
+                    <input type="hidden" id="minPriceInput" name="minPrice" value="@(Model.MinPrice ?? 0)" />
+                    <input type="hidden" id="maxPriceInput" name="maxPrice" value="@(Model.MaxPrice ?? 60000000)" />
+
+                    <div class="slider-container">
+                        <input type="range" id="minPriceRange" min="0" max="60000000" step="1000000"
+                               value="@(Model.MinPrice ?? 0)" class="slider" />
+                        <input type="range" id="maxPriceRange" min="0" max="60000000" step="1000000"
+                               value="@(Model.MaxPrice ?? 60000000)" class="slider" />
+                        <div class="slider-track" id="sliderTrack"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-right mt-3">
+                <button type="submit" class="btn btn-warning">Áp dụng</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    const openBtn = document.getElementById('openFilterBtn');
+    const closeBtn = document.getElementById('closeFilterBtn');
+    const popup = document.getElementById('filterPopup');
+
+    openBtn.addEventListener('click', () => popup.classList.add('show'));
+    closeBtn.addEventListener('click', () => popup.classList.remove('show'));
+    window.addEventListener('click', (e) => {
+        if (e.target === popup) popup.classList.remove('show');
+    });
+</script>
+<!-- JS: use vanilla JS so script works even before jQuery is loaded -->
+<script type="text/javascript">
+    (function () {
+        'use strict';
+
+        var filterForm = document.getElementById('filterForm');
+        var sortBySelect = document.getElementById('sortBySelect');
+        var minRange = document.getElementById('minPriceRange');
+        var maxRange = document.getElementById('maxPriceRange');
+        var minDisplay = document.getElementById('minPriceDisplay');
+        var maxDisplay = document.getElementById('maxPriceDisplay');
+        var minInput = document.getElementById('minPriceInput');
+        var maxInput = document.getElementById('maxPriceInput');
+        var track = document.getElementById('sliderTrack');
+
+        if (!filterForm) return;
+
+        var formatVND = function (val) {
+            try {
+                return new Intl.NumberFormat('vi-VN').format(val) + 'đ';
+            } catch (e) {
+                return val + 'đ';
+            }
+        };
+
+        var minGap = 1000000;
+        var maxLimit = 60000000;
+
+        function safeInt(v, fallback) {
+            var n = parseInt(v, 10);
+            return isNaN(n) ? fallback : n;
+        }
+
+        function updateSlider(e) {
+            if (!minRange || !maxRange) return;
+
+            var minVal = safeInt(minRange.value, 0);
+            var maxVal = safeInt(maxRange.value, maxLimit);
+
+            if (maxVal - minVal <= minGap) {
+                if (e && e.target === minRange) {
+                    minVal = maxVal - minGap;
+                    minRange.value = minVal;
+                } else {
+                    maxVal = minVal + minGap;
+                    maxRange.value = maxVal;
+                }
+            }
+
+            minVal = safeInt(minRange.value, 0);
+            maxVal = safeInt(maxRange.value, maxLimit);
+
+            if (minDisplay) minDisplay.value = formatVND(minVal);
+            if (maxDisplay) maxDisplay.value = formatVND(maxVal);
+            if (minInput) minInput.value = minVal;
+            if (maxInput) maxInput.value = maxVal;
+
+            if (track) {
+                var percent1 = (minVal / maxLimit) * 100;
+                var percent2 = (maxVal / maxLimit) * 100;
+                track.style.left = percent1 + "%";
+                track.style.right = (100 - percent2) + "%";
+            }
+        }
+
+        function debounce(fn, wait) {
+            var t;
+            return function () {
+                var ctx = this, args = arguments;
+                clearTimeout(t);
+                t = setTimeout(function () {
+                    fn.apply(ctx, args);
+                }, wait);
+            };
+        }
+
+        function submitForm() {
+            if (filterForm && typeof filterForm.submit === 'function') {
+                filterForm.submit();
+            }
+        }
+
+        var submitDebounced = debounce(submitForm, 250);
+
+        // Sort change -> submit
+        if (sortBySelect) {
+            sortBySelect.addEventListener('change', submitForm);
+        }
+
+        // Khi người dùng kéo thanh trượt
+        function activateSlider(slider) {
+            minRange.classList.remove('active');
+            maxRange.classList.remove('active');
+            slider.classList.add('active');
+        }
+
+        if (minRange && maxRange) {
+            minRange.addEventListener('input', function (e) {
+                activateSlider(minRange);
+                updateSlider(e);
+                submitDebounced();
+            });
+
+            maxRange.addEventListener('input', function (e) {
+                activateSlider(maxRange);
+                updateSlider(e);
+                submitDebounced();
+            });
+
+            // Khi thả ra thì bỏ active
+            minRange.addEventListener('change', function () {
+                minRange.classList.remove('active');
+                submitDebounced();
+            });
+
+            maxRange.addEventListener('change', function () {
+                maxRange.classList.remove('active');
+                submitDebounced();
+            });
+
+            updateSlider();
+        }
+    })();
+</script>
+
+
+<!-- CSS (unchanged) -->
+<style>
+    /* Nút mở */
+    .filter-toggle {
+        text-align: right;
+        margin-bottom: 10px;
+    }
+
+        .filter-toggle .btn {
+            font-size: 18px;
+            font-weight: 600;
+            color: #FE980F;
+            border: 1px solid #FE980F;
+            background: #fff;
+            transition: all 0.3s ease;
+        }
+
+            .filter-toggle .btn:hover {
+                background: #FE980F;
+                color: #fff;
+            }
+
+    /* Popup */
+    .filter-popup {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.4);
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+
+        .filter-popup.show {
+            display: flex;
+            animation: fadeIn 0.25s ease-in;
+        }
+
+    @@keyframes fadeIn {
+        from
+
+    {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    }
+
+    .filter-popup-content {
+        background: #fff;
+        padding: 20px 25px;
+        border-radius: 10px;
+        width: 100%;
+        max-width: 400px;
+        position: relative;
+        box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    }
+
+        .filter-popup-content h2 {
+            color: #FE980F;
+            font-size: 18px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 26px;
+        color: #999;
+        cursor: pointer;
+    }
+
+        .close-btn:hover {
+            color: #FE980F;
+        }
+
+    .filter-box {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 10px 15px;
+        margin-bottom: 15px;
+    }
+
+        .filter-box select {
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 15px;
+        }
+
+    /* Slider giữ nguyên từ bạn */
+    .slider-container {
+        position: relative;
+        height: 5px;
+        margin: 10px;
+    }
+
+    .slider {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 5px;
+        background: transparent;
+        position: absolute;
+        top: 0;
+        pointer-events: auto;
+        z-index: 2;
+    }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #337ab7;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+    .slider-track {
+        position: absolute;
+        height: 5px;
+        background: #337ab7;
+        border-radius: 3px;
+        top: 0;
+        z-index: 1;
+    }
+</style>

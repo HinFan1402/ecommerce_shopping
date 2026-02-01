@@ -1,0 +1,85 @@
+﻿@model IEnumerable<OrderModel>
+
+@{
+    ViewData["Title"] = "Order Management";
+
+}
+<div class="d-flex justify-content-between align-items-center mb-1 custom-breadcrumb">
+    <ol class="breadcrumb mb-0 pb-0">
+        <li><a href="#" class="admin-link"><i class="fa fa-home"></i>Home</a></li>
+        <li class="active">Lịch sử mua hàng</li>
+    </ol>
+</div>
+<div class="panel " style="margin-bottom: 30px; ">
+    <div class="panel-heading" style="background-color:#f0ad4e">
+        <h4 class="panel-title ">
+            <i class="fa fa-shopping-cart"></i> Đơn hàng của bạn
+        </h4>
+    </div>
+    <div class="panel-body" style="padding: 0;">
+        <div class="table-responsive">
+            <table class="table table-hover" style="margin-bottom: 0;">
+                <thead style="background-color: #f5f5f5;">
+                    <tr>
+                        <th>Mã đơn hàng</th>
+                        <th>Người nhận</th>
+                        <th>Thời gian</th>
+                        <th>Giảm giá </th>
+                        <th>Phí vận chuyển </th>
+                        <th>Thành tiền </th>
+                        <th>Trạng thái </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.OrderCode</td>
+                                <td>@item.UserName</td>
+                                <td>@item.CreateDate.ToString("dd/MM/yyyy hh:mm tt")</td>
+                                <td>@item.CouponCode</td>
+                                <td>@item.ShippingCost</td>
+                                <td>@item.FinalTotal</td>
+                               
+                                <td>
+                                    @if (item.status == 1)
+                                    {
+                                        <span class="text-success fw-semibold">Đã duyệt</span>
+                                    }
+                                    else if(item.status == 2)
+                                    {
+                                        <span class="text-danger fw-semibold">Đã hủy</span>
+                                    }
+             
+                                    else
+                                    {
+                                        <div class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
+                                            <span class="text-primary">Đơn hàng mới</span>
+                                            <a asp-action="CancelOrder" asp-controller="Account" onclick="return confirm('Bạn chắc chắn muốn hủy chứ?')" class="btn btn-danger btn-sm rounded-pill select-update-order"
+                                               asp-route-ordercode="@item.OrderCode">
+                                                Hủy
+                                            </a>
+                                        </div>
+                                    }
+                                </td>
+                                
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-3">No orders found.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="mt-3">
+    </div>
+</div>
+
